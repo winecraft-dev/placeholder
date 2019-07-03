@@ -15,10 +15,6 @@ module.exports = class OnlineServerManager
 	{
 		servers = new Map();
 		OnlineServerManager.start();
-
-		setInterval(function() {
-			console.log(servers);
-		}, 1000);
 	}
 
 	static async serverConnect(id, socket)
@@ -33,13 +29,27 @@ module.exports = class OnlineServerManager
 	{
 		switch(receiver)
 		{
-			case 'player_count':
-				if(message.player_count && servers.has(id))
-					servers.get(id).setPlayerCount(message.player_count);
+			case 'player_connect':
+				if(message.player && servers.has(id))
+					servers.get(id).playerConnect(message.player);
+				break;
+			case 'player_disconnect':
+				if(message.player && servers.has(id))
+					servers.get(id).playerDisconnect(message.player);
 				break;
 			default:
 				break;
 		}
+	}
+
+	static hasPlayer(id)
+	{
+		for(var [server_id, server] of servers)
+		{
+			if(server.hasPlayer(id))
+				return true;
+		}
+		return false;
 	}
 
 	static hasServer(id)
@@ -47,12 +57,30 @@ module.exports = class OnlineServerManager
 		return servers.has(id);
 	}
 
-	static async serverDisconnect(id)
+	static getOnlineServer(id)
+	{
+		if(servers.has(parseInt(id)))
+			return servers.get(parseInt(id));
+		return null;
+	}
+
+	static serverDisconnect(id)
 	{
 		if(servers.has(id))
 		{
 			var server = servers.get(id);
 			Logger.red("Server \"" + server.getName() + "\" has disconnected");
+			servers.delete(id);
+		}
+	}
+
+	static kickServer(id)
+	{
+		if(server.has(id))
+		{
+			var server = server.get(id);
+			Logger.red("Kicking Server \"" + server.getName() + "\"");
+			server.socket.close();
 			servers.delete(id);
 		}
 	}

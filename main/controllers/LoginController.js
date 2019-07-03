@@ -1,5 +1,7 @@
 const PlayerDatabaseModel = require(rootDirectory + '/models/PlayerDatabaseModel.js');
 
+const OnlineServerManager = require(rootDirectory + '/managers/OnlineServerManager.js');
+
 exports.display = function(req, res)
 {
 	res.render("LoginView");
@@ -10,7 +12,7 @@ exports.login = async function(req, res)
 	var email = req.body.email ? req.body.email : null;
 	var password = req.body.password ? req.body.password : null;
 
-	if(name != null && password != null)
+	if(email != null && password != null)
 	{
 		var playerResult = await PlayerDatabaseModel.getPlayerByEmail(email);
 
@@ -20,8 +22,15 @@ exports.login = async function(req, res)
 
 			if(player.checkPassword(password))
 			{
-				req.session.id = player.id;
-				res.send("SUCCESS");
+				if(OnlineServerManager.hasPlayer(player.id))
+				{
+					res.send("LOGGED IN FROM ANOTHER LOCATION");
+				}
+				else
+				{
+					req.session.id = player.id;
+					res.send("SUCCESS");
+				}
 			}
 			else
 			{

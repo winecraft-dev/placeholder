@@ -1,32 +1,17 @@
-const PlayerDatabaseModel = require(rootDirectory + '/models/PlayerDatabaseModel.js');
 const ServerDatabaseModel = require(rootDirectory + '/models/ServerDatabaseModel.js');
 
 exports.session = async function(req, res, next)
 {
 	req.logged_in = false;
-	req.player = null;
 	req.in_game = false;
-	req.server = null;
 
 	if(req.session.id)
 	{
-		var playerResult = await PlayerDatabaseModel.getPlayerById(req.session.id);
+		req.logged_in = true;
 
-		if(playerResult.hasData())
+		if(req.session.server_id)
 		{
-			req.logged_in = true;
-			req.player = playerResult.single();
-
-			if(req.session.server_id)
-			{
-				var serverResult = await ServerDatabaseModel.getServerById(req.session.id);
-
-				if(serverResult.hasData())
-				{
-					req.in_game = true;
-					req.server = serverResult.single();
-				}
-			}
+			req.in_game = true;
 		}
 	}
 	next();

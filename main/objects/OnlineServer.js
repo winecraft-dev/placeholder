@@ -5,17 +5,12 @@ module.exports = class OnlineServer
 		this.server = server;
 		this.socket = socket;
 
-		this.playerCount = 0;
+		this.players = new Set();
 	}
 
 	send(message)
 	{
 		this.socket.send(JSON.stringify(message));
-	}
-
-	setPlayerCount(count)
-	{
-		this.playerCount = count;
 	}
 
 	getName()
@@ -31,5 +26,20 @@ module.exports = class OnlineServer
 	getIP()
 	{
 		return this.server.ip;
+	}
+
+	playerConnect(id)
+	{
+		this.players.add(id);
+	}
+
+	hasPlayer(id)
+	{
+		return this.players.has(id);
+	}
+
+	playerDisconnect(id)
+	{
+		this.players.delete(id);
 	}
 }
