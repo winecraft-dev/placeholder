@@ -29,27 +29,33 @@ module.exports = class OnlineServerManager
 	{
 		switch(receiver)
 		{
-			case 'player_connect':
-				if(message.player && servers.has(id))
-					servers.get(id).playerConnect(message.player);
-				break;
 			case 'player_disconnect':
 				if(message.player && servers.has(id))
-					servers.get(id).playerDisconnect(message.player);
+					OnlineServerManager.playerDisconnect(id, message.player);
 				break;
 			default:
 				break;
 		}
 	}
 
-	static hasPlayer(id)
+	static playerConnect(id, player_id)
+	{
+		servers.get(id).playerConnect(player_id);
+	}
+
+	static hasPlayer(player_id)
 	{
 		for(var [server_id, server] of servers)
 		{
-			if(server.hasPlayer(id))
+			if(server.hasPlayer(player_id))
 				return true;
 		}
 		return false;
+	}
+
+	static playerDisconnect(id, player_id)
+	{
+		servers.get(id).playerDisconnect(player_id);
 	}
 
 	static hasServer(id)
@@ -105,7 +111,7 @@ module.exports = class OnlineServerManager
 			socket.on('message', function(message) {
 				var message = JSON.parse(message);
 				if(message.receiver)
-					OnlineServer.handleMessage(id, message.receiver, message);
+					OnlineServerManager.handleMessage(id, message.receiver, message);
 			});
 			socket.on('close', function() {
 				OnlineServerManager.serverDisconnect(id);

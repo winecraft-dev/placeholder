@@ -62,13 +62,19 @@ module.exports = class ExpressManager
 		// for servers
 		var ServerSessionController = require(rootDirectory + '/controllers/servers/ServerSessionController.js');
 		var ServerLoginController = require(rootDirectory + '/controllers/servers/ServerLoginController.js');
+		var ServerPlayerController = require(rootDirectory + '/controllers/servers/ServerPlayerController.js');
 
 		app.post('/servers/login', [
 			ServerSessionController.session,
 			ServerSessionController.authenticateLoggedOut,
 			ServerLoginController.login
 		]);
-
+		app.post('/servers/playerconnect', [
+			ServerSessionController.session,
+			ServerSessionController.authenticateLoggedIn,
+			ServerPlayerController.playerConnect
+		]);
+		
 		// for users
 		var SessionController = require(rootDirectory + '/controllers/SessionController.js');
 		var PageController = require(rootDirectory + '/controllers/PageController.js');
@@ -106,26 +112,19 @@ module.exports = class ExpressManager
 
 		app.get('/library', [
 			SessionController.session,
-			SessionController.authenticateOutGame,
-			LibraryController.display
-		]);
-		app.post('/joingame', [
-			SessionController.session,
 			SessionController.authenticateLoggedIn,
 			SessionController.authenticateOutGame,
-			LibraryController.joinGame
+			LibraryController.display
 		]);
 
 		app.get('/game', [
 			SessionController.session,
 			SessionController.authenticateLoggedIn,
-			SessionController.authenticateInGame,
 			GameController.display
 		]);
 		app.get('/leavegame', [
 			SessionController.session,
 			SessionController.authenticateLoggedIn,
-			SessionController.authenticateInGame,
 			GameController.leaveGame
 		]);
 	}	

@@ -1,5 +1,3 @@
-const ServerDatabaseModel = require(rootDirectory + '/models/ServerDatabaseModel.js');
-
 exports.session = async function(req, res, next)
 {
 	req.logged_in = false;

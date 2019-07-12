@@ -4,7 +4,7 @@ exports.session = async function(req, res, next)
 {
 	req.logged_in = false;
 	req.in_game = false;
-
+	
 	if(req.session.id)
 	{
 		req.logged_in = true;
@@ -39,24 +39,13 @@ exports.authenticateLoggedOut = function(req, res, next)
 		next();
 };
 
-exports.authenticateInGame = function(req, res, next)
-{
-	if(req.in_game == false)
-		if(req.method == "POST")
-			res.send("NOT IN GAME");
-		else
-			res.redirect('/library');
-	else
-		next();
-};
-
 exports.authenticateOutGame = function(req, res, next)
 {
 	if(req.in_game == true)
 		if(req.method == "POST")
 			res.send("IN GAME");
 		else
-			res.redirect('/game');
+			res.redirect('/game?server=' + req.session.server_id);
 	else
 		next();
 };

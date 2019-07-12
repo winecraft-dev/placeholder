@@ -22,14 +22,15 @@ exports.login = async function(req, res)
 
 			if(player.checkPassword(password))
 			{
-				if(OnlineServerManager.hasPlayer(player.id))
+				if(!OnlineServerManager.hasPlayer(player.id))
 				{
-					res.send("LOGGED IN FROM ANOTHER LOCATION");
+					await player.setNewToken();
+					req.session.id = player.id;
+					res.send("SUCCESS");
 				}
 				else
 				{
-					req.session.id = player.id;
-					res.send("SUCCESS");
+					res.send("LOGGED IN FROM ANOTHER LOCATION");
 				}
 			}
 			else

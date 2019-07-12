@@ -1,6 +1,7 @@
 const WebSocketServer = require('ws').Server;
 
 const GameManager = require('./GameManager.js');
+const MainManager = require('./MainManager.js');
 
 const Logger = require(rootDirectory + '/objects/Logger.js');
 const OnlinePlayer = require(rootDirectory + '/objects/OnlinePlayer.js');
@@ -18,23 +19,31 @@ module.exports = class OnlinePlayerManager
 	/*
 	*	These two methods are for players who have yet to be queued
 	*/
-	static playerConnect(id, username, socket)
+	static async playerConnect(token, socket)
 	{
 		// notify Match Maker of new player in queue
 
-		players.set(id, new OnlinePlayer(id, username, socket));
-		Logger.green("Player \"" + username + "\" has connected");
+		var result = await MainManager.playerConnect(token);
+		
+		if(result != null)	
+		{
+			var id = result.id;
+			var username = result.username;
+
+			players.set(token, new OnlinePlayer(token, id, username, socket));
+			Logger.green("Player \"" + token + "\" has connected");
+		}
 	}
 
-	static playerDisconnect(id)
+	static playerDisconnect(token)
 	{
-		if(players.has(id))
+		if(players.has(token))
 		{
 			// notify Match Maker unqueue of player in queue
 			
-			var username = players.get(id).username;
-			players.delete(id);
-			Logger.red("Player \"" + username + "\" has disconnected");
+			MainManager.playerDisconnect(players.get(token).id);
+			players.delete(token);
+			Logger.red("Player \"" + token + "\" has disconnected");
 		}
 	}
 
@@ -42,7 +51,9 @@ module.exports = class OnlinePlayerManager
 	*	These two methods are for players who have already been queued
 	*	and are in a match, so the games have to know about it
 	*/
-	static playerReconnect(game_id, id, username, socket)
+
+	/*
+	static playerReconnect(game_id, token, socket)
 	{
 		// notify game of the reconnection
 
@@ -50,7 +61,7 @@ module.exports = class OnlinePlayerManager
 		Logger.green("Player \"" + username + "\" has reconnected to Game \"" + game_id + "\"");
 	}
 
-	static playerGameDisconnect(game_id, id)
+	static playerGameDisconnect(game_id, token)
 	{
 		if(players.has(id))
 		{
@@ -61,7 +72,7 @@ module.exports = class OnlinePlayerManager
 
 			Logger.red("Player \"" + username + "\" has disconnected from Game \"" + game_id + "\"");
 		}
-	}
+	}*/
 
 	static start()
 	{
@@ -73,43 +84,30 @@ module.exports = class OnlinePlayerManager
 				callback(true);
 			}
 		}).on('connection', function(socket, req) {
-			var id = null;
-			var username = null;
 			var game_id = null;
+			var token = null;
 
 			setTimeout(function() {
-				if(id == null)
+				if(token == null)
 					socket.close();
 			}, 5000);
 
-			socket.on('message', function(message) {
+			socket.on('message', async function(message) {
 				var message = JSON.parse(message);
 
 				if(message.receiver)
 				{
-					if(message.receiver == "token" && message.id && message.username)
+					if(message.receiver == "token" && message.token)
 					{
-						game_id = GameManager.getPlayerGameId(message.id);
-						id = message.id;
-						username = message.username;
-
-						if(game_id != null)
-							OnlinePlayerManager.playerReconnect(game_id, id, username, socket);
-						else
-							OnlinePlayerManager.playerConnect(id, username, socket);
-					}
-					else if(game_id != null)
-					{
-						OnlinePlayerManager.handleMessage(game_id, id, message.receiver, message);
+						token = message.token;
+						await OnlinePlayerManager.playerConnect(token, socket);
 					}
 				}
 			});
 
 			socket.on('close', function() {
-				if(game_id != null)
-					OnlinePlayerManager.playerGameDisconnect(game_id, id);
-				else
-					OnlinePlayerManager.playerDisconnect(id);
+				if(token != null)
+					OnlinePlayerManager.playerDisconnect(token);
 			});
 		});
 	}

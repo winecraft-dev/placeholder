@@ -1,42 +1,61 @@
 const OnlineServerManager = require(rootDirectory + '/managers/OnlineServerManager.js');
 
+const PlayerDatabaseModel = require(rootDirectory + '/models/PlayerDatabaseModel.js');
+
 exports.display = async function(req, res)
 {
-	var id = req.session.id;
-	var server_id = req.session.server_id;
+	var player_id = req.session.id;
+	var server_id = req.query.server ? req.query.server : null;
 
-	var server = OnlineServerManager.getOnlineServer(server_id);
+	if(server_id != null)
+	{	
+		var server = OnlineServerManager.getOnlineServer(server_id);
 
-	if(server != null)
-	{
-		if(OnlineServerManager.hasPlayer(id) == false)
+		if(server != null)
 		{
-			var gameResult = await server.server.getGame();
+			req.session.server_id = server_id;
 
-			var game_info = gameResult.single();
+			if(OnlineServerManager.hasPlayer(player_id) == false)
+			{
+				var gameResult = await server.server.getGame();
+				var playerResult = await PlayerDatabaseModel.getPlayerById(player_id);
 
-			console.log(game_info);
+				if(gameResult.hasData() && playerResult.hasData())
+				{
+					var game = gameResult.single();
+					var player = playerResult.single();
 
-			res.render("GameView", {
-				ip: server.getIP(),
-				id: id,
-				title: game_info.name,
-				description: game_info.description
-			});
-		}
-		else
-		{
-			res.send("Already Logged in from another location!");
+					res.render("GameView", {
+						token: player.token,
+						ip: server.getIP(),
+						title: game.name,
+						description: game.description
+					});
+				}
+				else
+				{
+					res.render("ErrorView", {
+						code: '500',
+						message: 'Database Error'
+					});
+				}
+			}
+			else
+			{
+				res.render("ErrorView", {
+					code: '100',
+					message: 'Already Logged in from Another Location!'
+				});
+			}
+			return;
 		}
 	}
-	else
-	{
-		delete req.session.server_id;
-		res.redirect('/library');
-	}
+	delete req.session.server_id;
+	res.redirect('/library');
 };
 
 exports.leaveGame = function(req, res)
 {
-	
+	delete req.session.server_id;
+	res.redirect('/library');
 };

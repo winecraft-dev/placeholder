@@ -4,5 +4,7 @@
 	"sql_host": "178.128.177.108",
 	"sql_user": "developer",
 	"sql_password": "yoloswag624",
-	"sql_database": "drifter"
+	"sql_database": "drifter",
+
+	"token_length": "15"
 }

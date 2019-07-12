@@ -19,9 +19,8 @@ exports.update = async function(server)
 	var query = "UPDATE servers SET name='" + server.name + "', "
 			+ "password='" + server.password + "', "
 			+ "ip='" + server.ip + "', "
-			+ "max_players='" + server.max_players + "', "
-			+ "time='" + server.time + "', "
-			+ "player_count='" + server.player_count + "' WHERE id='" + server.id + "'";
+			+ "game='" + server.game + "', "
+			+ "max_players='" + server.max_players + "' WHERE id='" + server.id + "'";
 
 	return await DatabaseManager.query(query);
 };

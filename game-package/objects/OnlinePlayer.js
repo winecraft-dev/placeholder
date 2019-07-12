@@ -1,7 +1,8 @@
 module.exports = class OnlinePlayer
 {
-	constructor(id, username, socket)
+	constructor(token, id, username, socket)
 	{
+		this.token = token;
 		this.id = id;
 		this.username = username;
 

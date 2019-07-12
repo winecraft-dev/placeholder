@@ -38,11 +38,28 @@ module.exports = class MainManager
 		}
 	}
 
-	static pulse(player_count)
+	static async playerConnect(token)
+	{
+		var result = await MainManager.post("/servers/playerconnect", {
+			token: token
+		});
+
+		if(result == "DATABASE ERROR" || result == "TOKEN NOT PROVIDED" || result == "NOT CONNECTED")
+		{
+			Logger.red("Player data fetch failed; Response: " + result);
+		}
+		else if(result.id && result.username)
+		{
+			return result;
+		}
+		return null;
+	}
+
+	static playerDisconnect(player_id)
 	{
 		MainManager.sendMessage({
-			receiver: 'player_count',
-			player_count: player_count
+			receiver: 'player_disconnect',
+			player: player_id
 		});
 	}
 

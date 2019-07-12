@@ -15,12 +15,7 @@ module.exports = class Server
 		this.ip = data['ip'];
 		this.max_players = data['max_players'];
 	}
-
-	secondsSinceLastPulse()
-	{
-
-	}
-
+	
 	async getGame()
 	{
 		return await GameDatabaseModel.getGameById(this.game);
@@ -28,7 +23,7 @@ module.exports = class Server
 
 	async update()
 	{
-		return await ServerDatabaseModel.updateServer(this);
+		return await ServerDatabaseModel.update(this);
 	}
 
 	checkPassword(password)
