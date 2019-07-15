@@ -44,15 +44,18 @@ module.exports = class MainManager
 			token: token
 		});
 
-		if(result == "DATABASE ERROR" || result == "TOKEN NOT PROVIDED" || result == "NOT CONNECTED")
-		{
-			Logger.red("Player data fetch failed; Response: " + result);
-		}
-		else if(result.id && result.username)
+		if(result.id && result.username)
 		{
 			return result;
 		}
-		return null;
+		else if(result == "NOT CONNECTED" || result == "TOKEN NOT PROVIDED")
+		{
+			Logger.red("Player data fetch failed; Response: " + result);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	static playerDisconnect(player_id)

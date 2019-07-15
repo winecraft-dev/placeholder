@@ -24,7 +24,7 @@ module.exports = class OnlinePlayerManager
 		// notify Match Maker of new player in queue
 
 		var result = await MainManager.playerConnect(token);
-		
+
 		if(result != null)	
 		{
 			var id = result.id;
@@ -32,7 +32,14 @@ module.exports = class OnlinePlayerManager
 
 			players.set(token, new OnlinePlayer(token, id, username, socket));
 			Logger.green("Player \"" + token + "\" has connected");
+			return true;
 		}
+		return false;
+	}
+
+	static hasPlayer(token)
+	{
+		return players.has(token);
 	}
 
 	static playerDisconnect(token)
@@ -99,8 +106,14 @@ module.exports = class OnlinePlayerManager
 				{
 					if(message.receiver == "token" && message.token)
 					{
-						token = message.token;
-						await OnlinePlayerManager.playerConnect(token, socket);
+						if(!(await OnlinePlayerManager.playerConnect(message.token, socket)))
+						{
+							socket.close();
+						}
+						else
+						{
+							token = message.token;
+						}
 					}
 				}
 			});

@@ -34,10 +34,10 @@ $(document).ready(function() {
 	});
 
 	ws.addEventListener('close', function(e) {
-		console.log('closed, reloading in 1 second');
+		console.log('closed, reloading in 5 seconds');
 		setTimeout(function() {
 			window.location.reload();
-		}, 1000);
+		}, 5000);
 	});
 });
 

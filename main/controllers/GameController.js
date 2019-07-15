@@ -15,36 +15,26 @@ exports.display = async function(req, res)
 		{
 			req.session.server_id = server_id;
 
-			if(OnlineServerManager.hasPlayer(player_id) == false)
+			var gameResult = await server.server.getGame();
+			var playerResult = await PlayerDatabaseModel.getPlayerById(player_id);
+
+			if(gameResult.hasData() && playerResult.hasData())
 			{
-				var gameResult = await server.server.getGame();
-				var playerResult = await PlayerDatabaseModel.getPlayerById(player_id);
+				var game = gameResult.single();
+				var player = playerResult.single();
 
-				if(gameResult.hasData() && playerResult.hasData())
-				{
-					var game = gameResult.single();
-					var player = playerResult.single();
-
-					res.render("GameView", {
-						token: player.token,
-						ip: server.getIP(),
-						title: game.name,
-						description: game.description
-					});
-				}
-				else
-				{
-					res.render("ErrorView", {
-						code: '500',
-						message: 'Database Error'
-					});
-				}
+				res.render("GameView", {
+					token: player.token,
+					ip: server.getIP(),
+					title: game.name,
+					description: game.description
+				});
 			}
 			else
 			{
 				res.render("ErrorView", {
-					code: '100',
-					message: 'Already Logged in from Another Location!'
+					code: '500',
+					message: 'Database Error'
 				});
 			}
 			return;
