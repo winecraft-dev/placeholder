@@ -10,7 +10,6 @@ login = function(email, password)
 	}).done(function(response, textStatus, jqXHR) {
 		if(response == "SUCCESS")
 		{
-			alert("Logged In!");
 			window.location.reload();
 		}
 		else
@@ -19,3 +18,8 @@ login = function(email, password)
 		}
 	});
 };
+
+loginAction = function()
+{
+	login($('#email').val(), $('#password').val());
+}
