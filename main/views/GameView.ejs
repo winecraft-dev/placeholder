@@ -10,23 +10,15 @@
 		<script type="text/javascript" src="/scripts/gamepage.js"></script>
 		<script type="text/javascript" src="/scripts/three.min.js"></script>
 		<script type="text/javascript" src="/scripts/terrainGenerator.js"></script>
-		<script>
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
-			var renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
-
-			terrainGenerator(scene, {});
-		</script>
+		<script type="text/javascript" src="/scripts/Camera.js"></script>
+		<script type="text/javascript" src="/scripts/inputManager.js"></script>
+		<script type="text/javascript" src="/scripts/lighting.js"></script>
 		<style>
 			body { margin: 0; }
 			canvas { width: 100%; height: 100% }
 		</style>
 	</head>
-	<p style="display: none;" id="token"><%= token %></p>
-	<p style="display: none;" id="ip"><%= ip %></p>
-	<h1><%= title %></h1>
-	<p><%= description %></p>
+	<body>
+		<script type="text/javascript" src="/scripts/terrainBegin.js"></script>
+	</boby>
 </html>
