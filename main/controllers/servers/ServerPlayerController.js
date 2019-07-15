@@ -17,12 +17,19 @@ exports.playerConnect = async function(req, res)
 			{
 				var player = playerResult.single();
 
-				OnlineServerManager.playerConnect(server_id, player.id);
+				if(!OnlineServerManager.hasPlayer(player.id))
+				{
+					OnlineServerManager.playerConnect(server_id, player.id);
 
-				res.send({
-					id: player.id,
-					username: player.username
-				});
+					res.send({
+						id: player.id,
+						username: player.username
+					});
+				}
+				else
+				{
+					res.send("PLAYER ALREADY CONNECTED");
+				}
 			}
 			else
 			{
