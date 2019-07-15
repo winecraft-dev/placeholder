@@ -1,5 +1,5 @@
 
-function createFallowCamera(parent,options)
+function createFallowCamera(scene,parent,options)
 {
 	let startingRotation = typeof(options.startingRotation)=='undefined'?new CANNON.Vec3(0,0,0):options.startingRotation;
 	let offSet = typeof(options.offSet)=='undefined'?new CANNON.Vec3(0,0,0):options.offSet;
@@ -13,7 +13,7 @@ function createFallowCamera(parent,options)
 	this.Camera.position.copy(offSet);
 	this.Camera.quaternion.set(0,startingRotation.y,startingRotation.z,1);
 	this.CameraCore.quaternion.set(startingRotation.x,0,0,1);
-	Scene.add(this.Camera);
+	scene.add(this.Camera);
 
 	this.parentsOffSet = new THREE.Object3D();
 	this.parentsOffSet.position.copy(parent.position.add(offSet));
@@ -38,12 +38,12 @@ function createStaticCamera()
 
 }
 
-function createFlyCamera(pos)
+function createFlyCamera(scene,pos)
 {
 	this.position = pos;
 	this.rotation = new THREE.Euler(0,0,0,'YXZ');
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-	Scene.add(this.camera);
+	scene.add(this.camera);
 	this.forwardInput = 0;
 	this.flySpeed = .1;
 	this.rotationSpeed = .006;
