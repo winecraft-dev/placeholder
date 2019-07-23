@@ -27,7 +27,7 @@ function createSunLight(color,intens,pos,rot)
 
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
-	Scene.add(helper);
+	//	Scene.add(helper);
 }
 
 function createAmbientLight(color)
