@@ -40,13 +40,17 @@ var inPointerLock = false;
 
 window.onload = function()
 {
-  document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(){
+  console.log(document);
+  document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(e){
     let element = document.body.getElementsByTagName("canvas")[0];
     element.requestPointerLock = element.requestPointerLock ||
   			     element.mozRequestPointerLock ||
   			     element.webkitRequestPointerLock;
     element.requestPointerLock();
   },false);
+  document.addEventListener('pointerlockchange', (e) => {
+  console.log(document.activeElement);
+});
 }
 
 var mousePos = {x:0,y:0};

@@ -34,7 +34,7 @@ $(document).ready(function() {
 		switch(data.receiver)
 		{
 			case 'terrain':
-				generateTerrain2();
+				generateTerrain2(Scene,data.terrain.vertices,data.terrain.faces);
 				break;
 			default:
 				break;

@@ -3,36 +3,6 @@ var exampleHeightMap =
 0,0,0,0,0,0,0,0,0,3,2,1,1,1,1,1,0,0,9,3,2,2,1,2,2,1,1
 ];
 
-<<<<<<< HEAD
-function buildTerrain(thisScene,vertices,faces,colors)
-{
-  let threeVertices = [];
-  let threeFaces = [];
-  //loooooppps
-  for(let i of vertices)
-  {
-    threeVertices.push(new THREE.Vector3(vertices[i].x,vertices[i].y,vertices[i].z));
-  }
-
-  for(let i of faces)
-  {
-    let face = new THREE.Faces3(faces[i].a,faces[i].b,faces[i].c)
-    face.color.setRGB(colors[i].r,colors[i].g,colors[i].b);
-    threeFaces.push(face);
-  }
-
-  let geo = new THREE.Geometry();
-  geo.vertices = threeVertices;
-  geo.faces = threeEdges;
-  let material = new THREE.MeshStandardMaterial({
-    roughness: .9,
-    flatShading: true,
-    vertexColors: THREE.FaceColors
-  });
-  let plane = new THREE.Mesh(geo,material);
-  plane.receiveShadow = true;
-  thisScene.add(plane);
-=======
 function generateTerrain2(scene, vertices, faces)
 {
 	var three_vertices = [];
@@ -82,7 +52,6 @@ function colorFace2(face, biome)
 	{
 
 	}
->>>>>>> origin/Terrain
 }
 
 function generateTerrain(thisScene, options)
