@@ -23,10 +23,22 @@ module.exports = class Game
 		this.terrain.addTo(this.world);
 	}
 
+	// adds player to the player map
 	addPlayer(player)
 	{
 		Logger.blue("Player \"" + player.username + "\" added to Game " + this.id);
 		this.players.set(player.token, player);
+	}
+
+	// runs routine stuff when the player is connected, like downloading map
+	// probably don't need a player disconnect, for now
+	playerConnect(token)
+	{
+		const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManager.js');
+		OnlinePlayerManager.sendMessage(token, {
+			receiver: "terrain",
+			terrain: this.terrain.getTerrain()
+		});
 	}
 
 	hasPlayer(token)

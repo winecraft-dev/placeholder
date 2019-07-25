@@ -28,6 +28,7 @@ module.exports = class GameManager
 	{
 		// indexing 0 because only one game for testing purposes
 		games.get(0).addPlayer(new GamePlayer(token, username));
+		games.get(0).playerConnect(token);
 	}
 
 	static getGameByPlayer(token)

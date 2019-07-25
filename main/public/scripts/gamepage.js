@@ -30,7 +30,15 @@ $(document).ready(function() {
 
 	ws.addEventListener('message', function(e) {
 		var data = JSON.parse(e.data);
-		console.log(data);
+
+		switch(data.receiver)
+		{
+			case 'terrain':
+				generateTerrain2();
+				break;
+			default:
+				break;
+		}
 	});
 
 	ws.addEventListener('close', function(e) {

@@ -29,9 +29,9 @@ module.exports = class OnlinePlayerManager
 		{
 			Logger.green("Player \"" + token + "\" has connected");
 			
-			GameManager.playerConnect(token, result.username);
-
 			players.set(token, new OnlinePlayer(token, result.id, result.username, socket));
+			
+			GameManager.playerConnect(token, result.username);
 			return true;
 		}
 		return false;
@@ -54,7 +54,8 @@ module.exports = class OnlinePlayerManager
 
 	static sendMessage(token, message)
 	{
-		players.get(token).send(message);
+		if(players.has(token))
+			players.get(token).send(message);
 	}
 
 	static playerDisconnect(token)

@@ -3,6 +3,57 @@ var exampleHeightMap =
 0,0,0,0,0,0,0,0,0,3,2,1,1,1,1,1,0,0,9,3,2,2,1,2,2,1,1
 ];
 
+function generateTerrain2(scene, vertices, faces)
+{
+	var three_vertices = [];
+	var three_faces = [];
+
+	for(var vertex of vertices)
+	{
+		three_vertices.push(new THREE.Vector3(vertex.x, vertex.y, vertex.z));
+	}
+	for(var face of faces)
+	{
+		three_faces.push(new THREE.Face3(face.a, face.b, face.c));
+		colorFace2(three_faces[three_faces.length - 1], face.biome);
+	}
+	var geo = new THREE.Geometry();
+	geo.vertices = three_vertices;
+	geo.faces = three_faces;
+
+	let material = new THREE.MeshStandardMaterial({
+		roughness: .1,
+		flatShading: true,
+		vertexColors: THREE.FaceColors
+	});
+	let plane = new THREE.Mesh(geo, material);
+	plane.receiveShadow = true;
+	scene.add(plane);
+}
+
+function colorFace2(face, biome)
+{
+	if(biome == 0)
+	{
+		face.color.setStyle("#918679");
+		face.color.add(new THREE.Color(THREE.Math.randFloat(-.02,.02),THREE.Math.randFloat(-.02,.02),THREE.Math.randFloat(-.02,.02)));
+	}
+	else if(biome == 1)
+	{
+		face.color.setStyle("#ff00ff");
+		face.color.add(new THREE.Color(THREE.Math.randFloat(-.02,.02),THREE.Math.randFloat(-.05,.05),THREE.Math.randFloat(-.01,.01)));
+	}
+	else if(biome == 2)
+	{
+		face.color.setStyle("#3db020");
+		face.color.add(new THREE.Color(THREE.Math.randFloat(-.02,.02),THREE.Math.randFloat(-.05,.05),THREE.Math.randFloat(-.01,.01)));
+	}
+	else if(biome == 3)
+	{
+
+	}
+}
+
 function generateTerrain(thisScene, options)
 {
 	//TO DO: change defaulats to better defaults
@@ -52,14 +103,12 @@ function generateTerrain(thisScene, options)
 		{
 			if(alternate)
 			{
-                console.log("a", vertex);
 				edges.push(new THREE.Face3(vertex,vertex+this.widthSegments,vertex+this.widthSegments+1));
 				colorFace(edges[edges.length-1],vertices);
 				edges.push(new THREE.Face3(vertex,vertex+this.widthSegments+1,vertex+this.widthSegments+2));
 			}
 			else
 			{
-                console.log("b", vertex);
 				edges.push(new THREE.Face3(vertex,vertex-1,vertex+this.widthSegments+1));
 				colorFace(edges[edges.length-1],vertices);
 				edges.push(new THREE.Face3(vertex,vertex+this.widthSegments+1,vertex+1));
@@ -77,8 +126,6 @@ function generateTerrain(thisScene, options)
 	let geo = new THREE.Geometry();
 	geo.vertices = vertices;
 	geo.faces = edges;
-	console.log(vertices);
-	console.log(edges);
 	let material = new THREE.MeshStandardMaterial({
 		roughness: .9,
 		flatShading: true,
@@ -91,7 +138,6 @@ function generateTerrain(thisScene, options)
 
 function colorFace(face,allVertices)
 {
-        console.log(face);
 	let vertexHeightDifference = Math.max(Math.abs(allVertices[face.a].y - allVertices[face.b].y), Math.abs(allVertices[face.a].y - allVertices[face.c].y),Math.abs(allVertices[face.b].y - allVertices[face.c].y));
 	if(vertexHeightDifference > 5)
 	{

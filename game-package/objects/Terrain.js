@@ -40,7 +40,6 @@ module.exports = class Terrain
 
 		var widthSegments = x - 1;
 		var lengthSegments = z - 1;
-		console.log(widthSegments, lengthSegments);
 
 		var alternate = false;
 		for(var vertex = 0; vertex < this.vertices.length - (widthSegments + 1); vertex ++)
@@ -78,7 +77,6 @@ module.exports = class Terrain
 			{
 				if(alternate)
 				{
-					console.log("a", vertex);
 					this.cannon_faces.push(vertex);
 					this.cannon_faces.push(vertex + widthSegments);
 					this.cannon_faces.push(vertex + widthSegments + 1);
@@ -108,7 +106,6 @@ module.exports = class Terrain
 			{
 				if(alternate)
 				{
-					console.log("a", vertex);
 					this.cannon_faces.push(vertex);
 					this.cannon_faces.push(vertex + widthSegments);
 					this.cannon_faces.push(vertex + widthSegments + 1);
@@ -135,7 +132,6 @@ module.exports = class Terrain
 				}
 				else
 				{
-					console.log("b", vertex);
 					this.cannon_faces.push(vertex);
 					this.cannon_faces.push(vertex  - 1);
 					this.cannon_faces.push(vertex + widthSegments + 1);
@@ -176,7 +172,6 @@ module.exports = class Terrain
 
 	addBiome(face)
 	{
-		console.log(face);
 		var a = Math.abs(this.vertices[face.a].y - this.vertices[face.b].y);
 		var b = Math.abs(this.vertices[face.a].y - this.vertices[face.c].y);
 		var c = Math.abs(this.vertices[face.b].y - this.vertices[face.c].y);
