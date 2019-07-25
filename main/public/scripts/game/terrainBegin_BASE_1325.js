@@ -4,20 +4,12 @@ Scene.background = new THREE.Color( 0x3773d3 );
 
 //create canvas and set props
 var Renderer = new THREE.WebGLRenderer();
-Renderer.setSize(window.innerWidth, window.innerHeight);
+Renderer.setSize( window.innerWidth, window.innerHeight );
 Renderer.physicallyCorrectLights = true;
 Renderer.shadowMap.enabled = true;
 document.body.appendChild( Renderer.domElement );
 
-
-
 var Camera = new createFlyCamera(Scene,new THREE.Vector3(0,5,0));
-
-<<<<<<< HEAD
-window.addEventListener('resize',function(){
-		Renderer.setSize(window.innerWidth,window.innerHeight);
-		Camera.camera.aspect = window.innerWidth / window.innerHeight;
-});
 
 generateTerrain(Scene,{
 	width:15,
@@ -26,8 +18,6 @@ generateTerrain(Scene,{
 	lengthSegments:4
 });
 
-=======
->>>>>>> origin/Terrain
 createSunLight(0xffffff,3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
 createAmbientLight(0xffffff);
 
@@ -44,64 +34,6 @@ function animate() {
 }
 animate();
 
-var ip;
-var token;
-
-$(document).ready(function() {
-	ip = $('#ip').text();
-	token = $('#token').text();
-	url = 'ws://' + ip + ':1357';
-
-	ws = new WebSocket(url);
-
-	setTimeout(function() {
-		if(!open)
-		{
-			window.location.reload();
-		}
-	}, 10000);
-
-	ws.addEventListener('open', function(e) {
-		console.log('open');
-		open = true;
-
-		ws.send(JSON.stringify({
-			receiver: "token",
-			token: token
-		}));
-	});
-
-	ws.addEventListener('message', function(e) {
-		var data = JSON.parse(e.data);
-
-		switch(data.receiver)
-		{
-			case 'terrain':
-				generateTerrain2(Scene, data.terrain.vertices, data.terrain.faces);
-				break;
-			default:
-				break;
-		}
-	});
-
-	ws.addEventListener('close', function(e) {
-		console.log('closed, reloading in 5 seconds');
-		setTimeout(function() {
-			window.location.reload();
-		}, 5000);
-	});
-});
-
-send = function(data)
-{
-	if(open)
-		ws.send(JSON.stringify(data));
-};
-
-leaveGame = function()
-{
-	window.location.href = '/leavegame';
-};
 
 
 function checkInputs() {

@@ -17,6 +17,6 @@ module.exports = class Logger
 
 	static blue(message)
 	{
-		console.log("\x1b[30m" + message + "\x1b[0m")
+		console.log("\x1b[36m" + message + "\x1b[0m")
 	}
 }
