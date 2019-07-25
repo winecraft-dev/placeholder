@@ -36,9 +36,26 @@ function mouseIsDown(num)
   return mouseButtons[num];
 }
 
+var inPointerLock = false;
+
+window.onload = function()
+{
+  document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(){
+    let element = document.body.getElementsByTagName("canvas")[0];
+    element.requestPointerLock = element.requestPointerLock ||
+  			     element.mozRequestPointerLock ||
+  			     element.webkitRequestPointerLock;
+    element.requestPointerLock();
+  },false);
+  document.addEventListener('pointerlockchange', (e) => {
+    inPointerLock = !inPointerLock;
+    console.log(inPointerLock);
+  });
+}
+
 var mousePos = {x:0,y:0};
 
 window.addEventListener("mousemove", function(e){
-  mousePos.x = e.screenX;
-  mousePos.y = e.screenY;
+  mousePos.x += e.movementX;
+  mousePos.y += e.movementY;
 });

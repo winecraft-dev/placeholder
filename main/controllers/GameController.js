@@ -8,7 +8,7 @@ exports.display = async function(req, res)
 	var server_id = req.query.server ? req.query.server : null;
 
 	if(server_id != null)
-	{	
+	{
 		var server = OnlineServerManager.getOnlineServer(server_id);
 
 		if(server != null)

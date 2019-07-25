@@ -38,14 +38,28 @@ animate();
 
 function checkInputs() {
 	Camera.forwardInput = 0;
+	Camera.sideInput = 0;
+	Camera.upInput = 0;
   //check for input control
 	if (keyIsDown("W")||keyIsDown("I")) {
-    Camera.forwardInput = 1;
-  }
-  if (keyIsDown("S")||keyIsDown("K")) {
     Camera.forwardInput = -1;
   }
-	if(mouseIsDown(0))
+  if (keyIsDown("S")||keyIsDown("K")) {
+    Camera.forwardInput = 1;
+  }
+	if (keyIsDown("A")||keyIsDown("J")) {
+    Camera.sideInput = -1;
+  }
+  if (keyIsDown("D")||keyIsDown("L")) {
+    Camera.sideInput = 1;
+  }
+	if (keyIsDown("E")||keyIsDown("O")) {
+    Camera.upInput = 1;
+  }
+  if (keyIsDown("Q")||keyIsDown("U")) {
+    Camera.upInput = -1;
+  }
+	if(inPointerLock)
 	{
 		Camera.mouseDif.set(mousePos.x-lastMousePos.x,mousePos.y-lastMousePos.y);
 	}
