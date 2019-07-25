@@ -47,10 +47,6 @@ window.onload = function()
   			     element.webkitRequestPointerLock;
     element.requestPointerLock();
   },false);
-  document.addEventListener('pointerlockchange', (e) => {
-    inPointerLock = !inPointerLock;
-    console.log(inPointerLock);
-  });
 }
 
 var mousePos = {x:0,y:0};
