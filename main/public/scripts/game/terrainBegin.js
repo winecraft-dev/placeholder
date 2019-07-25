@@ -12,10 +12,10 @@ document.body.appendChild( Renderer.domElement );
 var Camera = new createFlyCamera(Scene,new THREE.Vector3(0,5,0));
 
 generateTerrain(Scene,{
-	width:15,
-	length:15,
-	widthSegments:4,
-	lengthSegments:4
+	width:9,
+	length:3,
+	widthSegments:8,
+	lengthSegments:2
 });
 
 createSunLight(0xffffff,3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));

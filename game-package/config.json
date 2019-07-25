@@ -1,5 +1,11 @@
-{
+{	
 	"ip": "localhost",
 	"name": "Server1",
-	"password": "smokeweedeveryday"
+	"password": "smokeweedeveryday",
+
+	"start_without_players": "1",
+	"wait_for_player": "10",
+	"players_per_team": "5",
+	"teams": "0",
+	"queue_speed": "10"
 }

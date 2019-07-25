@@ -27,11 +27,11 @@ module.exports = class OnlinePlayerManager
 
 		if(result != null)	
 		{
-			var id = result.id;
-			var username = result.username;
-
-			players.set(token, new OnlinePlayer(token, id, username, socket));
 			Logger.green("Player \"" + token + "\" has connected");
+			
+			GameManager.playerConnect(token, result.username);
+
+			players.set(token, new OnlinePlayer(token, result.id, result.username, socket));
 			return true;
 		}
 		return false;
@@ -42,56 +42,42 @@ module.exports = class OnlinePlayerManager
 		return players.has(token);
 	}
 
+	static handleMessage(token, receiver, message)
+	{
+		switch(receiver)
+		{
+			
+			default:
+				break;
+		}
+	}
+
+	static sendMessage(token, message)
+	{
+		players.get(token).send(message);
+	}
+
 	static playerDisconnect(token)
 	{
 		if(players.has(token))
 		{
-			// notify Match Maker unqueue of player in queue
-			
-			MainManager.playerDisconnect(players.get(token).id);
-			players.delete(token);
 			Logger.red("Player \"" + token + "\" has disconnected");
+
+			MainManager.playerDisconnect(players.get(token).id);
+			GameManager.playerDisconnect(token);
+
+			players.delete(token);
 		}
 	}
-
-	/*
-	*	These two methods are for players who have already been queued
-	*	and are in a match, so the games have to know about it
-	*/
-
-	/*
-	static playerReconnect(game_id, token, socket)
-	{
-		// notify game of the reconnection
-
-		players.set(id, new OnlinePlayer(id, username, socket));
-		Logger.green("Player \"" + username + "\" has reconnected to Game \"" + game_id + "\"");
-	}
-
-	static playerGameDisconnect(game_id, token)
-	{
-		if(players.has(id))
-		{
-			var username = players.get(id).username;
-			players.delete(id);
-
-			// notify game of the disconnect
-
-			Logger.red("Player \"" + username + "\" has disconnected from Game \"" + game_id + "\"");
-		}
-	}*/
 
 	static start()
 	{
-		const GameManager = require('./GameManager.js');
-
 		new WebSocketServer({
 			port: 1357,
 			verifyClient: function(info, callback) {
 				callback(true);
 			}
 		}).on('connection', function(socket, req) {
-			var game_id = null;
 			var token = null;
 
 			setTimeout(function() {
@@ -106,7 +92,11 @@ module.exports = class OnlinePlayerManager
 				{
 					if(message.receiver == "token" && message.token)
 					{
-						if(!(await OnlinePlayerManager.playerConnect(message.token, socket)))
+						if(OnlinePlayerManager.hasPlayer(message.token))
+						{
+							socket.close();
+						}
+						else if(!(await OnlinePlayerManager.playerConnect(message.token, socket)))
 						{
 							socket.close();
 						}
@@ -114,6 +104,10 @@ module.exports = class OnlinePlayerManager
 						{
 							token = message.token;
 						}
+					}
+					else if(token != null)
+					{
+						OnlinePlayerManager.handleMessage(token, message.receiver, message)
 					}
 				}
 			});
