@@ -62,5 +62,4 @@ function createFlyCamera(scene,pos)
 		this.camera.rotation.copy(this.rotation);
 		this.mouseDif.set(0,0,0)
 	}
-
 }

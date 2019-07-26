@@ -1,4 +1,5 @@
 //create scene and set props
+// just so you know these variables are global variables
 var Scene = new THREE.Scene();
 Scene.background = new THREE.Color( 0x3773d3 );
 
@@ -14,6 +15,7 @@ var Camera = new createFlyCamera(Scene,new THREE.Vector3(0,0,5));
 window.addEventListener('resize',function(){
 		Renderer.setSize(window.innerWidth,window.innerHeight);
 		Camera.camera.aspect = window.innerWidth / window.innerHeight;
+    Camera.camera.updateProjectionMatrix();
 });
 
 createSunLight(0xffffff,3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
@@ -35,6 +37,7 @@ animate();
 var ip;
 var token;
 
+// HEY. im pretty sure we can sent this websocket stuff to its own folder.
 $(document).ready(function() {
 	ip = $('#ip').text();
 	token = $('#token').text();
@@ -94,6 +97,11 @@ leaveGame = function()
 
 
 function checkInputs() {
+	/*
+		this stuff will be different for every game and will get complicated
+		very fast. SO some day i wish to see this be put into it's own scripts
+		and streamlined
+	*/
 	Camera.forwardInput = 0;
 	Camera.sideInput = 0;
 	Camera.upInput = 0;
@@ -122,4 +130,7 @@ function checkInputs() {
 	}
 	 lastMousePos.x = mousePos.x;
 	 lastMousePos.y = mousePos.y;
+	 if (keyIsDown(77)) {
+		 $('.menu').show();document.body.getElementsByTagName("canvas")[0].dispatchEvent(disablePointerLock);
+   }
 };

@@ -37,11 +37,12 @@ function mouseIsDown(num)
 }
 
 var inPointerLock = false;
-
+var disablePointerLock = new Event('disablePointerLock');
 window.onload = function()
 {
   console.log(document);
   document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(e){
+    $('.menu').hide();
     let element = document.body.getElementsByTagName("canvas")[0];
     element.requestPointerLock = element.requestPointerLock ||
   			     element.mozRequestPointerLock ||
@@ -49,8 +50,15 @@ window.onload = function()
     element.requestPointerLock();
   },false);
   document.addEventListener('pointerlockchange', (e) => {
-  console.log(document.activeElement);
-});
+  });
+
+  document.body.getElementsByTagName("canvas")[0].addEventListener("disablePointerLock",function(){
+    $('.menu').show();
+    document.exitPointerLock = document.exitPointerLock ||
+                              document.mozExitPointerLock ||
+  			                      document.webkitExitPointerLock;
+    document.exitPointerLock();
+  });
 }
 
 var mousePos = {x:0,y:0};
