@@ -45,11 +45,13 @@ window.onload = function()
     element.requestPointerLock = element.requestPointerLock ||
   			     element.mozRequestPointerLock ||
   			     element.webkitRequestPointerLock;
-    element.requestPointerLock();
+    if(!inPointerLock)
+    {
+      element.requestPointerLock();
+    }
   },false);
   document.addEventListener('pointerlockchange', (e) => {
     inPointerLock = !inPointerLock;
-    console.log(inPointerLock);
   });
 }
 
