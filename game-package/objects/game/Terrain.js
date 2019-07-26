@@ -1,11 +1,13 @@
 const CANNON = require('cannon');
 
-const heights = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+const GameObject = require('./GameObject.js')
 
-module.exports = class Terrain
+module.exports = class Terrain extends GameObject
 {
 	constructor(terrainText)
 	{
+		super(0, 0); // terrain is ALWAYS object 0, mass 0
+
 		this.vertices = []; // arrays to send to the client
 		this.faces = [];
 
@@ -21,7 +23,7 @@ module.exports = class Terrain
 			for(var vertex of row.split(' '))
 			{
 				var biome = vertex.charAt(0);
-				var y = heights.indexOf(vertex.charAt(1));
+				var y = parseFloat(vertex.substr(1)) / 2;
 
 				this.vertices.push({
 					x: x,
@@ -32,14 +34,14 @@ module.exports = class Terrain
 				this.cannon_vertices.push(x);
 				this.cannon_vertices.push(y);
 				this.cannon_vertices.push(z);
-				x ++;
+				x += .5;
 			}
-			z ++;
+			z += .5;
 		}
 		// at end of loop, x and z will be length and width
 
-		var widthSegments = x - 1;
-		var lengthSegments = z - 1;
+		var widthSegments = (x * 2) - 1;
+		var lengthSegments = (z * 2) - 1;
 
 		var alternate = false;
 		for(var vertex = 0; vertex < this.vertices.length - (widthSegments + 1); vertex ++)
@@ -166,8 +168,7 @@ module.exports = class Terrain
 			alternate = !alternate;
 		}
 
-		this.groundBody = new CANNON.Body({ mass: 0 });
-		this.groundBody.addShape(new CANNON.Trimesh(this.cannon_vertices, this.cannon_faces));
+		this.body.addShape(new CANNON.Trimesh(this.cannon_vertices, this.cannon_faces));
 	}
 
 	addBiome(face)
@@ -177,7 +178,7 @@ module.exports = class Terrain
 		var c = Math.abs(this.vertices[face.b].y - this.vertices[face.c].y);
 		var vertexHeightDifference = Math.max(a, b, c);
 
-		if(vertexHeightDifference > 5)
+		if(vertexHeightDifference > 5 / 4)
 		{
 			face.biome = 0; // rock
 		}
@@ -201,18 +202,15 @@ module.exports = class Terrain
 		}
 	}
 
-	addTo(world)
+	downloadInitial()
 	{
-		world.addBody(this.groundBody);
-	}
+		var base = super.downloadInitial();
 
-	getTerrain()
-	{
-		return {
-			vertices: this.vertices,
-			faces: this.faces,
-			cannon_vertices: this.cannon_vertices,
-			cannon_faces: this.cannon_faces
-		};
+		base.vertices = this.vertices;
+		base.faces = this.faces;
+		base.cannon_faces = this.cannon_faces;
+		base.cannon_vertices = this.cannon_vertices;
+
+		return base;
 	}
 }
