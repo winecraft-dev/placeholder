@@ -67,9 +67,26 @@ $(document).ready(function() {
 
 		switch(data.receiver)
 		{
+<<<<<<< HEAD
 			case 'terrain':
 				console.log(data.terrain);
 				generateTerrain2(Scene, data.terrain.vertices, data.terrain.faces);
+=======
+			case 'addobject':
+				switch(data.type)
+				{
+					case 'terrain':
+						generateTerrain(Scene, data.object);
+						break;
+					case 'player':
+						//generatePlayer(Scene, data.object);
+						break;
+					default:
+						break;
+				}
+				break;
+			case 'updateobject':
+>>>>>>> origin/master
 				break;
 			default:
 				break;

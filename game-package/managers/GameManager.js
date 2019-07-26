@@ -1,10 +1,12 @@
-const Game = require(rootDirectory + '/objects/Game.js');
-const GamePlayer = require(rootDirectory + '/objects/GamePlayer.js');
+const Game = require(rootDirectory + '/objects/game/Game.js');
+const GamePlayer = require(rootDirectory + '/objects/game/GamePlayer.js');
 
 var game_id;
 var games;
 
 var queueing;
+
+var object_id = -1;
 
 module.exports = class GameManager
 {
@@ -27,7 +29,7 @@ module.exports = class GameManager
 	static playerConnect(token, username)
 	{
 		// indexing 0 because only one game for testing purposes
-		games.get(0).addPlayer(new GamePlayer(token, username));
+		games.get(0).addPlayer(new GamePlayer(token, username, object_id --));
 		games.get(0).playerConnect(token);
 	}
 

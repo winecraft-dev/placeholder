@@ -14,6 +14,12 @@ exports.getServerByName = async function(name)
 	return await DatabaseManager.query(query, Server);
 };
 
+exports.getServersByGame = async function(game_id)
+{
+	var query = "SELECT * FROM servers WHERE game='" + game_id + "'";
+	return await DatabaseManager.query(query, Server);
+};
+
 exports.update = async function(server)
 {
 	var query = "UPDATE servers SET name='" + server.name + "', "
