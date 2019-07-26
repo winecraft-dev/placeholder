@@ -13,3 +13,9 @@ exports.getGamesByDeveloper = async function(developer)
 	var query = "SELECT * FROM games WHERE developer='" + developer + "'";
 	return await DatabaseManager.query(query, Game);
 };
+
+exports.getAllGames = async function()
+{
+	var query = "SELECT * FROM games";
+	return await DatabaseManager.query(query, Game);
+};

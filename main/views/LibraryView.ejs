@@ -10,5 +10,13 @@
 		<script type="text/javascript" src="/scripts/librarypage.js"></script>
 	</head>
 	<h1>Library</h1>
-	<a href="/game?server=3">Go to Game</a>
+	<% for(var game of games) { %>
+		<p>
+			<b><%= game.name %></b><br>
+			<%= game.description %><br>
+			<% for(var server of game.servers) { %>
+				<a href="/game?server=<%= server.id%>">Server "<%= server.name %>"</a> <b><%= server.online ? "Online" : "Offline" %></b><br>
+			<% } %>
+		</p>
+	<% } %>
 </html>
