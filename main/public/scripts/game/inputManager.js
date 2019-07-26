@@ -40,7 +40,6 @@ var inPointerLock = false;
 var disablePointerLock = new Event('disablePointerLock');
 window.onload = function()
 {
-  console.log(document);
   document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(e){
     $('.menu').hide();
     let element = document.body.getElementsByTagName("canvas")[0];

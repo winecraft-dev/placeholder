@@ -124,7 +124,15 @@ function checkInputs() {
   if (keyIsDown("Q")||keyIsDown("U")) {
     Camera.upInput = -1;
   }
-	if(true)
+	if(keyIsDown(16))
+	{
+		Camera.flySpeed = .2;
+	}
+	else
+	{
+		Camera.flySpeed = .1;
+	}
+	if(inPointerLock)
 	{
 		Camera.mouseDif.set(mousePos.x-lastMousePos.x,mousePos.y-lastMousePos.y);
 	}

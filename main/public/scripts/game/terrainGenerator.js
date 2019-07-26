@@ -22,7 +22,7 @@ function generateTerrain2(scene, vertices, faces)
 	geo.faces = three_faces;
 
 	let material = new THREE.MeshStandardMaterial({
-		roughness: .1,
+		roughness: .95,
 		flatShading: true,
 		vertexColors: THREE.FaceColors
 	});
