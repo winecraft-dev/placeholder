@@ -131,6 +131,6 @@ function checkInputs() {
 	 lastMousePos.x = mousePos.x;
 	 lastMousePos.y = mousePos.y;
 	 if (keyIsDown(77)) {
-		 $('.menu').show();document.body.getElementsByTagName("canvas")[0].dispatchEvent(disablePointerLock);
+		 document.body.getElementsByTagName("canvas")[0].dispatchEvent(disablePointerLock);
    }
 };

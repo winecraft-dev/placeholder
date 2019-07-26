@@ -47,9 +47,13 @@ window.onload = function()
     element.requestPointerLock = element.requestPointerLock ||
   			     element.mozRequestPointerLock ||
   			     element.webkitRequestPointerLock;
-    element.requestPointerLock();
+    if(!inPointerLock)
+    {
+      element.requestPointerLock();
+    }
   },false);
   document.addEventListener('pointerlockchange', (e) => {
+    inPointerLock = !inPointerLock;
   });
 
   document.body.getElementsByTagName("canvas")[0].addEventListener("disablePointerLock",function(){
@@ -57,7 +61,10 @@ window.onload = function()
     document.exitPointerLock = document.exitPointerLock ||
                               document.mozExitPointerLock ||
   			                      document.webkitExitPointerLock;
-    document.exitPointerLock();
+    if(inPointerLock)
+    {
+      document.exitPointerLock();
+    }
   });
 }
 
