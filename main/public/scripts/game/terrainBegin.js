@@ -30,6 +30,10 @@ function animate() {
 	checkInputs();
 	Camera.Update();
 
+	playerList.forEach(function(player){
+		player.Update();
+	});
+
 	Renderer.render( Scene, Camera.camera);
 }
 animate();
@@ -79,7 +83,8 @@ $(document).ready(function() {
 						generateTerrain(Scene, data.object);
 						break;
 					case 'player':
-						//generatePlayer(Scene, data.object);
+						console.log(data);
+						generatePlayer(Scene, data.object);
 						break;
 					default:
 						break;
