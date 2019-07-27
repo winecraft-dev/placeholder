@@ -34,6 +34,7 @@ $(document).ready(function() {
 		switch(data.receiver)
 		{
 			case 'terrain':
+				console.log(data);
 				generateTerrain2();
 				break;
 			default:
