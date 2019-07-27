@@ -12,18 +12,21 @@ module.exports = class Terrain extends GameObject
 		this.faces = [];
 
 		this.cannon_vertices = [];
-		this.cannon_faces = [];
 
 		var x = 0;
-		var z = 0;
+		var y = 0;
 
 		for(var row of terrainText.split('\n'))
 		{
 			x = 0;
+			this.cannon_vertices.push([]);
+
 			for(var vertex of row.split(' '))
 			{
 				var biome = vertex.charAt(0);
-				var y = parseFloat(vertex.substr(1)) / 2;
+				var z = parseFloat(vertex.substr(1));
+
+				this.cannon_vertices[y].push(z);
 
 				this.vertices.push({
 					x: x,
@@ -31,17 +34,15 @@ module.exports = class Terrain extends GameObject
 					z: z,
 					biome: biome
 				});
-				this.cannon_vertices.push(x);
-				this.cannon_vertices.push(y);
-				this.cannon_vertices.push(z);
-				x += .5;
+
+				x += 1;
 			}
-			z += .5;
+			y += 1;
 		}
 		// at end of loop, x and z will be length and width
 
-		var widthSegments = (x * 2) - 1;
-		var lengthSegments = (z * 2) - 1;
+		var widthSegments = x - 1;
+		var lengthSegments = y - 1;
 
 		var alternate = false;
 		for(var vertex = 0; vertex < this.vertices.length - (widthSegments + 1); vertex ++)
@@ -50,10 +51,6 @@ module.exports = class Terrain extends GameObject
 			{
 				if(alternate)
 				{
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-					this.cannon_faces.push(vertex + widthSegments + 2);
-
 					// vertex,vertex+this.widthSegments+1,vertex+this.widthSegments+2)
 					this.faces.push({
 						a: vertex,
@@ -63,10 +60,6 @@ module.exports = class Terrain extends GameObject
 				}
 				else
 				{
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-					this.cannon_faces.push(vertex + 1);
-
 					// vertex,vertex+this.widthSegments+1,vertex+1
 					this.faces.push({
 						a: vertex,
@@ -79,10 +72,6 @@ module.exports = class Terrain extends GameObject
 			{
 				if(alternate)
 				{
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex + widthSegments);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-
 					// vertex,vertex+this.widthSegments,vertex+this.widthSegments+1
 					this.faces.push({
 						a: vertex,
@@ -92,10 +81,6 @@ module.exports = class Terrain extends GameObject
 				}
 				else
 				{
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex - 1);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-
 					//vertex,vertex-1,vertex+this.widthSegments+1
 					this.faces.push({
 						a: vertex,
@@ -108,10 +93,6 @@ module.exports = class Terrain extends GameObject
 			{
 				if(alternate)
 				{
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex + widthSegments);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-
 					//vertex,vertex+this.widthSegments,vertex+this.widthSegments+1
 					this.faces.push({
 						a: vertex,
@@ -120,10 +101,6 @@ module.exports = class Terrain extends GameObject
 					});
 
 					this.addBiome(this.faces[this.faces.length - 1]);
-
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-					this.cannon_faces.push(vertex + widthSegments + 2);
 
 					//vertex,vertex+this.widthSegments+1,vertex+this.widthSegments+2
 					this.faces.push({
@@ -134,10 +111,6 @@ module.exports = class Terrain extends GameObject
 				}
 				else
 				{
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex  - 1);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-
 					//vertex,vertex-1,vertex+this.widthSegments+1
 					this.faces.push({
 						a: vertex,
@@ -146,10 +119,6 @@ module.exports = class Terrain extends GameObject
 					});
 
 					this.addBiome(this.faces[this.faces.length - 1]);
-
-					this.cannon_faces.push(vertex);
-					this.cannon_faces.push(vertex + widthSegments + 1);
-					this.cannon_faces.push(vertex + 1);
 
 					//vertex,vertex+this.widthSegments+1,vertex+1
 					this.faces.push({
@@ -168,7 +137,9 @@ module.exports = class Terrain extends GameObject
 			alternate = !alternate;
 		}
 
-		this.body.addShape(new CANNON.Trimesh(this.cannon_vertices, this.cannon_faces));
+		this.body.addShape(new CANNON.Heightfield(this.cannon_vertices, {
+			elementSize: 1
+		}));
 	}
 
 	addBiome(face)
@@ -208,7 +179,6 @@ module.exports = class Terrain extends GameObject
 
 		base.vertices = this.vertices;
 		base.faces = this.faces;
-		base.cannon_faces = this.cannon_faces;
 		base.cannon_vertices = this.cannon_vertices;
 
 		return base;

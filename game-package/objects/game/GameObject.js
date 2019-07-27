@@ -16,6 +16,11 @@ module.exports = class GameObject
 		world.add(this.body);
 	}
 
+	removeFrom(world)
+	{
+		world.remove(this.body);
+	}
+
 	updatePosition(x_pos, y_pos, z_pos)
 	{
 		this.body.position = new CANNON.Vec3(x_pos, y_pos, z_pos);

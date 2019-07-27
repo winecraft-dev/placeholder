@@ -6,7 +6,7 @@ module.exports = class GamePlayer extends GameObject
 {
 	constructor(token, username, object_id)
 	{
-		super(object_id, 1);
+		super(object_id, 10);
 
 		this.token = token;
 		this.username = username;
