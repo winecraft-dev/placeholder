@@ -11,6 +11,7 @@ module.exports = class OnlinePlayer
 
 	send(message)
 	{
-		this.socket.send(JSON.stringify(message));
+		if(this.socket.readyState == 1)
+            this.socket.send(JSON.stringify(message));
 	}
 }
