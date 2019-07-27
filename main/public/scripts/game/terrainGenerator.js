@@ -35,6 +35,7 @@ function generateTerrain(scene, object)
 	scene.add(plane);
 }
 
+
 function colorFace(face, biome)
 {
 	if(biome == 0)

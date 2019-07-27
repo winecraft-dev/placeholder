@@ -79,21 +79,28 @@ module.exports = class Game
 		this.players = players;
 
 		this.world = new CANNON.World();
-		this.world.gravity.set(0, 0, -1);
+		this.world.gravity.set(0, 0, -9.82);
+		this.world.broadphase = new CANNON.SAPBroadphase(this.world);
+		this.world.defaultContactMaterial.friction = 0.2;
 
 		this.terrain = new Terrain(terrainstring);
 		this.terrain.addTo(this.world);
+		console.log(this.terrain.body.shapes[0].pillarConvex.worldVertices);
 
+		var fixedTimeStep = 1.0 / 30.0; // seconds
+		var maxSubSteps = 3;
+
+		// Start the simulation loop
 		var self = this;
 		setInterval(function() {
-			self.gameAction();
+			self.gameAction(fixedTimeStep, fixedTimeStep, maxSubSteps);
 			self.sendAction();
-		}, 1 / 30);
+		}, fixedTimeStep);
 	}
 
-	gameAction()
+	gameAction(fixedTimeStep, dt, maxSubSteps)
 	{
-		this.world.step(1 / 30, 1 / 30, 3);
+		this.world.step(fixedTimeStep, dt, maxSubSteps);
 	}
 
 	sendAction()
@@ -124,7 +131,8 @@ module.exports = class Game
 	{
 		Logger.blue("Player \"" + player.username + "\" added to Game " + this.id);
 		this.players.set(player.token, player);
-		this.players.get(player.token).updatePosition(0, 25, 0);
+		this.players.get(player.token).updatePosition(5, 5, 25);
+		this.players.get(player.token).addTo(this.world);
 	}
 
 	// runs routine stuff when the player is connected, like downloading map
@@ -159,6 +167,7 @@ module.exports = class Game
 		if(this.hasPlayer(token))
 		{
 			var player = this.players.get(token);
+			player.removeFrom(this.world);
 			Logger.blue("Player \"" + player.username + "\" removed from Game " + this.id);
 		}
 		this.players.delete(token);

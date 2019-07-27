@@ -63,6 +63,7 @@ module.exports = class ExpressManager
 		var ServerSessionController = require(rootDirectory + '/controllers/servers/ServerSessionController.js');
 		var ServerLoginController = require(rootDirectory + '/controllers/servers/ServerLoginController.js');
 		var ServerPlayerController = require(rootDirectory + '/controllers/servers/ServerPlayerController.js');
+		var ServerPulseController = require(rootDirectory + '/controllers/servers/ServerPulseController.js');
 
 		app.post('/servers/login', [
 			ServerSessionController.session,
@@ -74,6 +75,11 @@ module.exports = class ExpressManager
 			ServerSessionController.authenticateLoggedIn,
 			ServerPlayerController.playerConnect
 		]);
+		app.post('/servers/pulse', [
+			ServerSessionController.session,
+			ServerSessionController.authenticateLoggedIn,
+			ServerPulseController.pulse
+		]);
 		
 		// for users
 		var SessionController = require(rootDirectory + '/controllers/SessionController.js');
@@ -84,9 +90,9 @@ module.exports = class ExpressManager
 		//var ModerationController = require(rootDirectory + '/controllers/ModerationController.js');
 		//var AdminController = require(rootDirectory + '/controllers/AdminController.js');
 
-		app.get('/', [
-			PageController.index
-		]);
+		app.get('/', function(req, res) {
+			res.redirect('/login');
+		});
 		app.get('/documentation', [
 			PageController.documentation
 		]);

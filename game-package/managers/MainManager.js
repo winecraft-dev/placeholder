@@ -18,6 +18,25 @@ module.exports = class MainManager
 
 		await MainManager.login();
 		MainManager.start();
+
+		setInterval(function() {
+			//MainManager.pulse();
+		}, 120000);
+	}
+
+	static async pulse()
+	{
+		var result = await MainManager.post("/servers/pulse", { });
+
+		if(result != "SUCCESS")
+		{
+			Logger.red("Pulse failed; Response: " + result);
+			process.exit();
+		}
+		else
+		{
+			console.log("test");
+		}
 	}
 
 	static async login()
@@ -115,7 +134,7 @@ module.exports = class MainManager
 					}
 					if(body == "NOT LOGGED IN")
 					{
-						Logger.red("Login Failed");
+						Logger.red("Not Logged In!");
 						timeout = true;
 						process.exit();
 					}
