@@ -9,7 +9,9 @@ Renderer.physicallyCorrectLights = true;
 Renderer.shadowMap.enabled = true;
 document.body.appendChild( Renderer.domElement );
 
-var Camera = new createFlyCamera(Scene,new THREE.Vector3(0,5,0));
+var Camera = new createFlyCamera(Scene,new THREE.Vector3(10,10,25), {
+	startingRotation: THREE.Vector3(0, 270, 30)
+});
 
 createSunLight(0xffffff,3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
 createAmbientLight(0xffffff);
@@ -70,7 +72,6 @@ $(document).ready(function() {
 						generateTerrain(Scene, data.object);
 						break;
 					case 'player':
-						console.log(data);
 						generatePlayer(Scene, data.object);
 						break;
 					default:
@@ -78,6 +79,17 @@ $(document).ready(function() {
 				}
 				break;
 			case 'updateobject':
+				switch(data.type)
+				{
+					case 'terrain':
+						//generateTerrain(Scene, data.object);
+						break;
+					case 'player':
+						updatePlayer(data.object);
+						break;
+					default:
+						break;
+				}
 				break;
 			default:
 				break;

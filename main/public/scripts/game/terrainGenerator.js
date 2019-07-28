@@ -1,7 +1,11 @@
-var exampleHeightMap =
-[
-0,0,0,0,0,0,0,0,0,3,2,1,1,1,1,1,0,0,9,3,2,2,1,2,2,1,1
-];
+var terrain;
+
+function terrainObject(options)
+{
+	this.id = options.id;
+	this.position= options.position;
+	this.rotation= options.rotation;
+}
 
 function generateTerrain(scene, object)
 {
@@ -27,6 +31,8 @@ function generateTerrain(scene, object)
 		vertexColors: THREE.FaceColors
 	});
 	let plane = new THREE.Mesh(geo, material);
+
+	plane.position.set(object.x_pos, object.y_pos, object.z_pos);
 	plane.receiveShadow = true;
 	scene.add(plane);
 }

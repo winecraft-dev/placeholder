@@ -7,6 +7,7 @@ for(var x = 0; x < 64; x ++)
 	{
 		var height = Math.cos(x / 64 * Math.PI * 5) * Math.cos(y / 64 * Math.PI * 5) * 2 + 2;
 
+		height = Math.round(height * 10) / 10;
 		if(x === 0 || x === 64 - 1 || y === 0 || y === 64 - 1)
 			height = 3;
 		string += 'g' + height + ' ';

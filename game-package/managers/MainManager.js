@@ -91,7 +91,7 @@ module.exports = class MainManager
 			if(!timeout)
 			{
 				request.get({
-					url: "http://" + ConfigManager.get('ip') + path,
+					url: "http://" + ConfigManager.get('ip') + ":" + ConfigManager.get('http_port') + path,
 					json: true,
 					jar: session
 				}, function(error, response, body) {
@@ -120,7 +120,7 @@ module.exports = class MainManager
 			if(!timeout)
 			{
 				request.post({
-					url: "http://" + ConfigManager.get('ip') + path,
+					url: "http://" + ConfigManager.get('ip') + ":" + ConfigManager.get('http_port') + path,
 					json: true,
 					jar: session,
 					body: body

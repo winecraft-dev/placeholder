@@ -14,10 +14,10 @@ module.exports = class GamePlayer extends GameObject
 
 		this.cylinder_radiusTop = 1;
 		this.cylinder_radiusBot = 1;
-		this.cylinder_height = 1;
+		this.cylinder_height = 3;
 		this.cylinder_numSegments = 20;
 
-		this.shape = new CANNON.Cylinder(this.cylinder_radiusTop, this.cylinder_radiusBot, this.cylinder_height, this.cylinder_numSegments);
+		this.body.addShape(new CANNON.Cylinder(this.cylinder_radiusTop, this.cylinder_radiusBot, this.cylinder_height, this.cylinder_numSegments));
 	}
 
 	setTeam(team)
