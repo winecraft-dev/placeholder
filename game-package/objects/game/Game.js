@@ -128,7 +128,7 @@ module.exports = class Game
 	{
 		Logger.blue("Player \"" + player.username + "\" added to Game " + this.id);
 		this.players.set(player.token, player);
-		this.players.get(player.token).updatePosition(10, 10, 10);
+		this.players.get(player.token).updatePosition(12, 12, 30);
 		this.players.get(player.token).addTo(this.world);
 	}
 
