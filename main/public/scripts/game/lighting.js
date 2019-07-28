@@ -25,9 +25,42 @@ function createSunLight(color,intens,pos,rot)
 	Scene.add(lightTarget);
 	Scene.add(light);
 
+	//add ambient
+	var ambientLight = new THREE.AmbientLight(0xffffff);
+	Scene.add(ambientLight);
+
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
 	Scene.add(helper);
+
+	let timeCycle = 0;
+
+	this.Update = function()
+	{
+		light.position.set(0,5*Math.sin(timeCycle),5*Math.cos(timeCycle));
+		if(timeCycle<Math.PI/6)
+		{
+			console.log("going orange");
+			ambientLight.color.lerp(new THREE.Color(0xf0991f),.1);
+			light.color.lerp(new THREE.Color(0xf0991f),.1);
+			console.log(light.color);
+		}
+		else if(timeCycle<(Math.PI*5)/6)
+		{
+			console.log("going white");
+			ambientLight.color.lerp(new THREE.Color(0xffffff),.1);
+			light.color.lerp(new THREE.Color(0xffffff),.1);
+			console.log(light.color);
+		}
+		else if(timeCycle>(Math.PI*5)/6)
+		{
+			console.log("going orange");
+			ambientLight.color.lerp(new THREE.Color(0xf0991f),.1);
+			light.color.lerp(new THREE.Color(0xf0991f),.1);
+			console.log(light.color);
+		}
+		timeCycle += Math.PI/1000;
+	}
 }
 
 function createAmbientLight(color)

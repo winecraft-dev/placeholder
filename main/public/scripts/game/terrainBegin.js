@@ -1,7 +1,26 @@
 //create scene and set props
 // just so you know these variables are global variables
 var Scene = new THREE.Scene();
-Scene.background = new THREE.Color( 0x3773d3 );
+
+const loader = new THREE.TextureLoader();
+const texture = loader.load(
+  '/images/Skybox.jpg',
+);
+texture.magFilter = THREE.NearestMipMapNearestFilter;
+texture.minFilter = THREE.NearestMipMapNearestFilter;
+
+const shader = THREE.ShaderLib.equirect;
+  const material = new THREE.ShaderMaterial({
+  fragmentShader: shader.fragmentShader,
+  vertexShader: shader.vertexShader,
+  uniforms: shader.uniforms,
+  depthWrite: false,
+  side: THREE.BackSide,
+});
+material.uniforms.tEquirect.value = texture;
+const plane = new THREE.SphereBufferGeometry( 5, 10, 10 );
+bgMesh = new THREE.Mesh(plane, material);
+Scene.add(bgMesh);
 
 //create canvas and set props
 var Renderer = new THREE.WebGLRenderer();
@@ -9,6 +28,7 @@ Renderer.setSize(window.innerWidth, window.innerHeight);
 Renderer.physicallyCorrectLights = true;
 Renderer.shadowMap.enabled = true;
 document.body.appendChild( Renderer.domElement );
+Renderer.autoClearColor = false;
 
 var Camera = new createFlyCamera(Scene,new THREE.Vector3(0,0,5));
 
@@ -18,9 +38,7 @@ window.addEventListener('resize',function(){
     Camera.camera.updateProjectionMatrix();
 });
 
-createSunLight(0xffffff,3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
-createAmbientLight(0xffffff);
-
+let sun = new createSunLight(0xffffff,3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
 
 var lastMousePos = {x:0,y:0};
 //set update loop for all classes
@@ -29,11 +47,11 @@ function animate() {
 
 	checkInputs();
 	Camera.Update();
-
+	sun.Update();
 	playerList.forEach(function(player){
 		player.Update();
 	});
-
+	bgMesh.position.copy(Camera.camera.position);
 	Renderer.render( Scene, Camera.camera);
 }
 animate();
@@ -71,11 +89,6 @@ $(document).ready(function() {
 
 		switch(data.receiver)
 		{
-<<<<<<< HEAD
-			case 'terrain':
-				console.log(data.terrain);
-				generateTerrain2(Scene, data.terrain.vertices, data.terrain.faces);
-=======
 			case 'addobject':
 				switch(data.type)
 				{
@@ -83,7 +96,6 @@ $(document).ready(function() {
 						generateTerrain(Scene, data.object);
 						break;
 					case 'player':
-						console.log(data);
 						generatePlayer(Scene, data.object);
 						break;
 					default:
@@ -91,7 +103,6 @@ $(document).ready(function() {
 				}
 				break;
 			case 'updateobject':
->>>>>>> origin/master
 				break;
 			default:
 				break;
