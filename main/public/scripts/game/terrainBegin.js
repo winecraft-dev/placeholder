@@ -103,6 +103,17 @@ $(document).ready(function() {
 				}
 				break;
 			case 'updateobject':
+				switch(data.type)
+				{
+					case 'terrain':
+						//generateTerrain(Scene, data.object);
+						break;
+					case 'player':
+						updatePlayer(data.object);
+						break;
+					default:
+						break;
+				}
 				break;
 			default:
 				break;

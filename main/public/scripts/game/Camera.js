@@ -1,7 +1,7 @@
 
 function createFallowCamera(scene,parent,options)
 {
-	let startingRotation = typeof(options.startingRotation)=='undefined'?new CANNON.Vec3(120,0,0):options.startingRotation;
+	let startingRotation = typeof(options.startingRotation)=='undefined'?new CANNON.Vec3(0,0,0):options.startingRotation;
 	let offSet = typeof(options.offSet)=='undefined'?new CANNON.Vec3(0,0,0):options.offSet;
 	let maxDistance = typeof(options.maxDistance)=='undefined'?1:options.maxDistance;
 	let lerpRate = typeof(options.lerpRate)=='undefined'?.1:options.lerpRate;

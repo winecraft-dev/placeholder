@@ -24,7 +24,7 @@ module.exports = class Terrain extends GameObject
 			for(var vertex of row.split(' '))
 			{
 				var biome = vertex.charAt(0);
-				var z = parseFloat(vertex.substr(1));
+				var z = (Math.round(parseFloat(vertex.substr(1)) * 10) / 10);
 
 				this.cannon_vertices[y].push(z);
 
@@ -144,9 +144,9 @@ module.exports = class Terrain extends GameObject
 
 	addBiome(face)
 	{
-		var a = Math.abs(this.vertices[face.a].y - this.vertices[face.b].y);
-		var b = Math.abs(this.vertices[face.a].y - this.vertices[face.c].y);
-		var c = Math.abs(this.vertices[face.b].y - this.vertices[face.c].y);
+		var a = Math.abs(this.vertices[face.a].z - this.vertices[face.b].z);
+		var b = Math.abs(this.vertices[face.a].z - this.vertices[face.c].z);
+		var c = Math.abs(this.vertices[face.b].z - this.vertices[face.c].z);
 		var vertexHeightDifference = Math.max(a, b, c);
 
 		if(vertexHeightDifference > 5 / 4)
@@ -177,9 +177,19 @@ module.exports = class Terrain extends GameObject
 	{
 		var base = super.downloadInitial();
 
-		base.vertices = this.vertices;
+		var converted_vertices = [];
+		for(var vertex of this.vertices)
+		{
+			converted_vertices.push({
+				x: vertex.x,
+				y: vertex.z,
+				z: vertex.y,
+				biome: vertex.biome
+			});
+		}
+
+		base.vertices = converted_vertices;
 		base.faces = this.faces;
-		base.cannon_vertices = this.cannon_vertices;
 
 		return base;
 	}

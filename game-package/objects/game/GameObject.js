@@ -28,22 +28,34 @@ module.exports = class GameObject
 
 	downloadInitial() 
 	{
+		var eulerAngle = new CANNON.Vec3(0, 0, 0);
+		this.body.quaternion.toEuler(eulerAngle);
+
 		return {
 			id: this.id,
 			mass: this.body.mass,
 			x_pos: this.body.position.x,
-			y_pos: this.body.position.y,
-			z_pos: this.body.position.z
+			y_pos: this.body.position.z,
+			z_pos: this.body.position.y,
+			x_ang: eulerAngle.z,
+			y_ang: eulerAngle.x,
+			z_ang: eulerAngle.y
 		}
 	}
 
 	downloadUpdates() 
-	{ 
+	{
+		var eulerAngle = new CANNON.Vec3(0, 0, 0);
+		this.body.quaternion.toEuler(eulerAngle);
+
 		return {
 			id: this.id,
 			x_pos: this.body.position.x,
-			y_pos: this.body.position.y,
-			z_pos: this.body.position.z,
+			y_pos: this.body.position.z,
+			z_pos: this.body.position.y,
+			x_ang: eulerAngle.y,
+			y_ang: eulerAngle.z,
+			z_ang: eulerAngle.x
 		}
 	}
 }
