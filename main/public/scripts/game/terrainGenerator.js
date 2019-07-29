@@ -34,6 +34,7 @@ function generateTerrain(scene, object)
 
 	plane.position.set(object.x_pos, object.y_pos, object.z_pos);
 	plane.receiveShadow = true;
+	plane.castShadow = true;
 	scene.add(plane);
 }
 

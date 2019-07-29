@@ -41,22 +41,22 @@ function createSunLight(color,intens,pos,rot)
 		if(timeCycle<Math.PI/6)
 		{
 			console.log("going orange");
-			ambientLight.color.lerp(new THREE.Color(0xf0991f),.1);
-			light.color.lerp(new THREE.Color(0xf0991f),.1);
+			ambientLight.color.lerp(new THREE.Color(0xf0991f),.01);
+			light.color.lerp(new THREE.Color(0xf0991f),.01);
 			console.log(light.color);
 		}
 		else if(timeCycle<(Math.PI*5)/6)
 		{
 			console.log("going white");
-			ambientLight.color.lerp(new THREE.Color(0xffffff),.1);
-			light.color.lerp(new THREE.Color(0xffffff),.1);
+			ambientLight.color.lerp(new THREE.Color(0xffffff),.01);
+			light.color.lerp(new THREE.Color(0xffffff),.01);
 			console.log(light.color);
 		}
 		else if(timeCycle>(Math.PI*5)/6)
 		{
 			console.log("going orange");
-			ambientLight.color.lerp(new THREE.Color(0xf0991f),.1);
-			light.color.lerp(new THREE.Color(0xf0991f),.1);
+			ambientLight.color.lerp(new THREE.Color(0xf0991f),.01);
+			light.color.lerp(new THREE.Color(0xf0991f),.01);
 			console.log(light.color);
 		}
 		timeCycle += Math.PI/1000;
