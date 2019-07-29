@@ -12,13 +12,13 @@ function createSpotLight(color,pos,angle,dis,intens,pen)
 	Scene.add(helper);
 }
 
-function createSunLight(color,intens,pos,rot)
+function createSunLight(intens,pos,rot)
 {
-	var light = new THREE.DirectionalLight(color,intens);
+	var light = new THREE.DirectionalLight(0xffffff,intens);
 	light.position.copy(pos);
 	light.castShadow = true;
 	light.shadow.mapSize.copy(new THREE.Vector2(1000,1000));
-	light.shadow.camera.zoom = 1;
+	light.shadow.camera.zoom = .08;
 	let lightTarget = new THREE.Object3D();
 	lightTarget.position.copy(rot);
 	light.target = lightTarget;
@@ -37,29 +37,37 @@ function createSunLight(color,intens,pos,rot)
 
 	this.Update = function()
 	{
-		light.position.set(0,5*Math.sin(timeCycle),5*Math.cos(timeCycle));
+		light.position.set(0,50*Math.sin(timeCycle),50*Math.cos(timeCycle));
+
 		if(timeCycle<Math.PI/6)
 		{
-			console.log("going orange");
+			//Morning
 			ambientLight.color.lerp(new THREE.Color(0xf0991f),.01);
 			light.color.lerp(new THREE.Color(0xf0991f),.01);
-			console.log(light.color);
 		}
 		else if(timeCycle<(Math.PI*5)/6)
 		{
-			console.log("going white");
+			//Evening
 			ambientLight.color.lerp(new THREE.Color(0xffffff),.01);
 			light.color.lerp(new THREE.Color(0xffffff),.01);
-			console.log(light.color);
 		}
-		else if(timeCycle>(Math.PI*5)/6)
+		else if(timeCycle<Math.PI)
 		{
-			console.log("going orange");
+			//sunset
 			ambientLight.color.lerp(new THREE.Color(0xf0991f),.01);
 			light.color.lerp(new THREE.Color(0xf0991f),.01);
-			console.log(light.color);
 		}
-		timeCycle += Math.PI/1000;
+		else if(timeCycle>Math.PI)
+		{
+			//night
+			ambientLight.color.lerp(new THREE.Color(0xa5c2f2),.01);
+			light.color.lerp(new THREE.Color(0xa5c2f2),.01);
+		}
+
+		if(timeCycle>2*Math.PI)
+			timeCycle-=2*Math.PI;
+
+		timeCycle += Math.PI/2000;
 	}
 }
 
