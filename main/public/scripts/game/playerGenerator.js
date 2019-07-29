@@ -4,7 +4,7 @@ var playerList = new Map();
 function playerObject(options)
 {
 	this.position = options.position;
-	this.angle = options.angle;
+	this.quaternion = options.quaternion;
 	this.id = options.id;
 	this.tag = "player";
 	this.name = options.username;
@@ -13,7 +13,7 @@ function playerObject(options)
 	this.Update = function()
 	{
 		this.mesh.position.set(this.position.x,this.position.y,this.position.z);
-		this.mesh.setRotationFromEuler(new THREE.Euler(this.angle.x, this.angle.y, this.angle.z, 'XYZ'));
+		this.mesh.quaternion.copy(this.quaternion);
 	}
 }
 
@@ -30,7 +30,12 @@ function generatePlayer(scene, object)
 	//push the stuff
 	playerList.set(object.id,new playerObject({
 		position: {x:object.x_pos,y:object.y_pos,z:object.z_pos},
-		angle: {x:object.x_ang,y:object.y_ang,z:object.z_ang},
+		quaternion: {
+			x: object.x_quat,
+			y: object.y_quat,
+			z: object.z_quat,
+			w: object.w_quat
+		},
 		id: object.id,
 		mesh: mesh,
 		mass: object.mass,
@@ -45,7 +50,12 @@ function updatePlayer(object)
 	let myPlayer = playerList.get(object.id);
 	//update player object stuff
 	myPlayer.position = {x:object.x_pos,y:object.y_pos,z:object.z_pos};
-	myPlayer.angle = {x:object.x_ang,y:object.y_ang,z:object.z_ang};
+	myPlayer.quaternion = {
+		x: object.x_quat,
+		y: object.y_quat,
+		z: object.z_quat,
+		w: object.w_quat
+	};
 }
 
 function removePlayer(object)
