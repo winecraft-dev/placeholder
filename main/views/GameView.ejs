@@ -14,13 +14,28 @@
 		<script type="text/javascript" src="/scripts/game/inputManager.js"></script>
 		<script type="text/javascript" src="/scripts/game/lighting.js"></script>
 		<style>
-			body { margin: 0; }
-			canvas { width: 100%; height: 100% }
+			body { margin: 0; overflow: hidden;}
+			canvas {
+				width: 100%; height: 100%;
+			}
+			.menu{
+				position: absolute;
+				top: 50%;
+				left:50%;
+				transform: translate(-50%,-50%);
+				width: 50%;
+				height: 75%;
+				background-color: grey;
+				display: none;
+			}
 		</style>
 	</head>
 	<body>
 		<p style="display: none;" id="token"><%= token %></p>
 		<p style="display: none;" id="ip"><%= ip %></p>
 		<script type="text/javascript" src="/scripts/game/terrainBegin.js"></script>
+		<div class="menu">
+			menu idea here.
+		</div>
 	</boby>
 </html>

@@ -37,19 +37,33 @@ function mouseIsDown(num)
 }
 
 var inPointerLock = false;
-
+var disablePointerLock = new Event('disablePointerLock');
 window.onload = function()
 {
-  document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(){
+  document.body.getElementsByTagName("canvas")[0].addEventListener("click",function(e){
+    $('.menu').hide();
     let element = document.body.getElementsByTagName("canvas")[0];
     element.requestPointerLock = element.requestPointerLock ||
   			     element.mozRequestPointerLock ||
   			     element.webkitRequestPointerLock;
-    element.requestPointerLock();
+    if(!inPointerLock)
+    {
+      element.requestPointerLock();
+    }
   },false);
   document.addEventListener('pointerlockchange', (e) => {
     inPointerLock = !inPointerLock;
-    console.log(inPointerLock);
+  });
+
+  document.body.getElementsByTagName("canvas")[0].addEventListener("disablePointerLock",function(){
+    $('.menu').show();
+    document.exitPointerLock = document.exitPointerLock ||
+                              document.mozExitPointerLock ||
+  			                      document.webkitExitPointerLock;
+    if(inPointerLock)
+    {
+      document.exitPointerLock();
+    }
   });
 }
 
