@@ -30,7 +30,7 @@ Renderer.shadowMap.enabled = true;
 document.body.appendChild( Renderer.domElement );
 Renderer.autoClearColor = false;
 
-var Camera = new createFlyCamera(Scene,new THREE.Vector3(0,0,5));
+var Camera = new createFlyCamera(Scene,new THREE.Vector3(10,10,25));
 
 window.addEventListener('resize',function(){
 		Renderer.setSize(window.innerWidth,window.innerHeight);
@@ -112,6 +112,20 @@ $(document).ready(function() {
 						updatePlayer(data.object);
 						break;
 					default:
+						break;
+				}
+				break;
+			case 'removeobject':
+				switch(data.type)
+				{
+					case 'terrain':
+						//generateTerrain(Scene, data.object);
+						break;
+					case 'player':
+						removePlayer(data.object_id);
+						break;
+					default:
+						removePlayer(data.object_id);
 						break;
 				}
 				break;
