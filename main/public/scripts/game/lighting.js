@@ -12,62 +12,78 @@ function createSpotLight(color,pos,angle,dis,intens,pen)
 	Scene.add(helper);
 }
 
-function createSunLight(intens,pos,rot)
+function createSunLight(scene,intens,time)
 {
+	this.realTime = time;
 	var light = new THREE.DirectionalLight(0xffffff,intens);
-	light.position.copy(pos);
 	light.castShadow = true;
 	light.shadow.mapSize.copy(new THREE.Vector2(1000,1000));
 	light.shadow.camera.zoom = .08;
+	light.shadow.camera.far = 1000;
 	let lightTarget = new THREE.Object3D();
-	lightTarget.position.copy(rot);
 	light.target = lightTarget;
-	Scene.add(lightTarget);
-	Scene.add(light);
+	scene.add(lightTarget);
+	scene.add(light);
 
 	//add ambient
 	var ambientLight = new THREE.AmbientLight(0xffffff);
-	Scene.add(ambientLight);
+	scene.add(ambientLight);
 
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
-	Scene.add(helper);
-
-	let timeCycle = 0;
+	scene.add(helper);
 
 	this.Update = function()
 	{
-		light.position.set(0,50*Math.sin(timeCycle),50*Math.cos(timeCycle));
+		let timeCycle = convertTime(this.realTime);
 
-		if(timeCycle<Math.PI/6)
+		light.position.set(0,-500*Math.cos(timeCycle),500*Math.sin(timeCycle));
+
+		let phase = getDayPhase(this.realTime);
+		console.log(phase);
+		let color;
+		let sunlerp;
+		switch(phase)
 		{
-			//Morning
-			ambientLight.color.lerp(new THREE.Color(0xf0991f),.01);
-			light.color.lerp(new THREE.Color(0xf0991f),.01);
-		}
-		else if(timeCycle<(Math.PI*5)/6)
-		{
-			//Evening
-			ambientLight.color.lerp(new THREE.Color(0xffffff),.01);
-			light.color.lerp(new THREE.Color(0xffffff),.01);
-		}
-		else if(timeCycle<Math.PI)
-		{
-			//sunset
-			ambientLight.color.lerp(new THREE.Color(0xf0991f),.01);
-			light.color.lerp(new THREE.Color(0xf0991f),.01);
-		}
-		else if(timeCycle>Math.PI)
-		{
-			//night
-			ambientLight.color.lerp(new THREE.Color(0xa5c2f2),.01);
-			light.color.lerp(new THREE.Color(0xa5c2f2),.01);
+			case 'day':
+				color = new THREE.Color(0xffffff);
+				break;
+			case 'night':
+				color = new THREE.Color(0xa5c2f2);
+				break;
+			case 'sunset':
+				color = new THREE.Color(0xedaf1f);
+				break;
+			case 'sunrise':
+				color = new THREE.Color(0xedaf1f);
+				break;
 		}
 
-		if(timeCycle>2*Math.PI)
-			timeCycle-=2*Math.PI;
+		ambientLight.color.lerp(color,.05);
+		light.color.lerp(color,.05);
 
-		timeCycle += Math.PI/2000;
+		if(this.realTime > 24)
+			this.realTime-=24;
+
+		this.realTime += .01;
+
+	}
+	function convertTime(time)
+	{
+		return (time*(2*Math.PI)/24);
+	}
+	function getDayPhase(time)
+	{
+		if(time<5.5)
+			return 'night';
+		else if(time<7)
+			return 'sunrise';
+		else if(time<17)
+			return 'day';
+		else if(time<19.5)
+			return 'sunset';
+		else if(time>19.5)
+			return 'night';
 	}
 }
 

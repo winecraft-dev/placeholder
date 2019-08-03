@@ -18,7 +18,7 @@ const shader = THREE.ShaderLib.equirect;
   side: THREE.BackSide,
 });
 material.uniforms.tEquirect.value = texture;
-const plane = new THREE.SphereBufferGeometry( 5, 10, 10 );
+const plane = new THREE.SphereBufferGeometry(2,5,5);
 bgMesh = new THREE.Mesh(plane, material);
 Scene.add(bgMesh);
 
@@ -38,7 +38,7 @@ window.addEventListener('resize',function(){
     Camera.camera.updateProjectionMatrix();
 });
 
-let sun = new createSunLight(3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
+let sun = new createSunLight(Scene,3,2);
 
 var lastMousePos = {x:0,y:0};
 //set update loop for all classes
