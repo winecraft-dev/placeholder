@@ -5,7 +5,6 @@ var game_id;
 var games;
 
 var queueing;
-
 var object_id = -1;
 
 module.exports = class GameManager
@@ -29,8 +28,13 @@ module.exports = class GameManager
 	static playerConnect(token, username)
 	{
 		// indexing 0 because only one game for testing purposes
-		games.get(0).addPlayer(new GamePlayer(token, username, object_id --));
+		games.get(0).addPlayer(token, new GamePlayer(token, username, object_id --));
 		games.get(0).playerConnect(token);
+	}
+
+	static handleMessage(token, receiver, message)
+	{
+		GameManager.getGameByPlayer(token).handleMessage(token, receiver, message);
 	}
 
 	static getGameByPlayer(token)

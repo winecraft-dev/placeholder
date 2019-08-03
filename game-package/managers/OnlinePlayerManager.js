@@ -46,8 +46,9 @@ module.exports = class OnlinePlayerManager
 	{
 		switch(receiver)
 		{
-			
+			// other cases may be things like party commands, think about it later
 			default:
+				GameManager.handleMessage(token, receiver, message);
 				break;
 		}
 	}

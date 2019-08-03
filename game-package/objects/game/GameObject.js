@@ -2,9 +2,10 @@ const CANNON = require('cannon');
 
 module.exports = class GameObject
 {
-	constructor(id, mass)
+	constructor(id, type, mass)
 	{
 		this.id = id;
+		this.type = type;
 
 		this.body = new CANNON.Body({
 			mass: mass
