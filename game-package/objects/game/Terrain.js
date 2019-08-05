@@ -6,7 +6,7 @@ module.exports = class Terrain extends GameObject
 {
 	constructor(terrainText)
 	{
-		super(0, 0); // terrain is ALWAYS object 0, mass 0
+		super(0, 'terrain', 0); // terrain is ALWAYS object 0, mass 0
 
 		this.vertices = []; // arrays to send to the client
 		this.faces = [];

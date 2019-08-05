@@ -19,6 +19,7 @@ function playerObject(options)
 
 function generatePlayer(scene, object)
 {
+	console.log(object.id);
 	//create an object and put into list
 	let geo = new THREE.CylinderGeometry(object.radiusTop,object.radiusBot,object.height,object.numSegments);
 	let material = new THREE.MeshStandardMaterial({
@@ -58,9 +59,10 @@ function updatePlayer(object)
 	};
 }
 
-function removePlayer(object)
+function removePlayer(id)
 {
+	console.log(id);
 	//remove player from list AND the scene
-	Scene.remove(playerList.get(object.id));
-	playerList.delete(object.id);
+	Scene.remove(playerList.get(id).mesh);
+	playerList.delete(id);
 }
