@@ -17,9 +17,9 @@ function createSunLight(scene,intens,time)
 	this.realTime = time;
 	var light = new THREE.DirectionalLight(0xffffff,intens);
 	light.castShadow = true;
-	light.shadow.mapSize.copy(new THREE.Vector2(1000,1000));
-	light.shadow.camera.zoom = .08;
-	light.shadow.camera.far = 1000;
+	light.shadow.mapSize.copy(new THREE.Vector2(2000,2000));
+	light.shadow.camera.zoom = .02;
+	light.shadow.camera.far = 2000;
 	let lightTarget = new THREE.Object3D();
 	light.target = lightTarget;
 	scene.add(lightTarget);
@@ -29,6 +29,12 @@ function createSunLight(scene,intens,time)
 	var ambientLight = new THREE.AmbientLight(0xffffff);
 	scene.add(ambientLight);
 
+	//add sunobject
+	let sungeo = new THREE.SphereGeometry(20,10,10);
+	let material = new THREE.MeshBasicMaterial({color: 0xffffff});
+	let sunObject = new THREE.Mesh(sungeo,material);
+	scene.add(sunObject);
+
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
 	scene.add(helper);
@@ -37,10 +43,10 @@ function createSunLight(scene,intens,time)
 	{
 		let timeCycle = convertTime(this.realTime);
 
-		light.position.set(0,-500*Math.cos(timeCycle),500*Math.sin(timeCycle));
+		light.position.set(0,-1000*Math.cos(timeCycle),1000*Math.sin(timeCycle));
+		sunObject.position.copy(light.position);
 
 		let phase = getDayPhase(this.realTime);
-		console.log(phase);
 		let color;
 		let sunlerp;
 		switch(phase)

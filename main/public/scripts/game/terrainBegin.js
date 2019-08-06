@@ -9,6 +9,7 @@ const texture = loader.load(
 texture.magFilter = THREE.NearestMipMapNearestFilter;
 texture.minFilter = THREE.NearestMipMapNearestFilter;
 
+//skybox
 const shader = THREE.ShaderLib.equirect;
   const material = new THREE.ShaderMaterial({
   fragmentShader: shader.fragmentShader,
