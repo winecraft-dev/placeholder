@@ -5,6 +5,7 @@ const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManag
 const Logger = require(rootDirectory +'/objects/Logger.js');
 const Terrain = require('./Terrain.js');
 
+// temporary map text, later we'll add a way to load maps from text files or something
 var terrainstring = 
 	"g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3 g3\n" +
 	"g3 g3.9 g3.7 g3.4 g3.1 g2.7 g2.2 g1.7 g1.3 g0.8 g0.5 g0.2 g0.1 g0.1 g0.1 g0.3 g0.6 g1 g1.4 g1.9 g2.4 g2.8 g3.2 g3.6 g3.8 g3.9 g3.9 g3.8 g3.6 g3.3 g2.9 g2.5 g2 g1.5 g1.1 g0.7 g0.4 g0.2 g0.1 g0.1 g0.2 g0.4 g0.8 g1.2 g1.6 g2.1 g2.6 g3 g3.4 g3.7 g3.9 g3.9 g3.9 g3.8 g3.5 g3.2 g2.7 g2.3 g1.8 g1.3 g0.9 g0.6 g0.3 g3\n" +
@@ -73,18 +74,21 @@ var terrainstring =
 
 module.exports = class Game
 {
-	constructor(id, players)
+	constructor(game_id, players)
 	{
-		this.id = id;
-		this.gameObjects = new Map();
-		this.playerTokens = new Map();
+		this.id = game_id;
+		this.gameObjects = new Map(); // single map of object_id => gameobject
+		this.playerTokens = new Map(); // map of player token => their avatar's object_id
 
-		this.world = new CANNON.World();
+		// creates the world
+		this.world = new CANNON.World(); 
 		this.world.gravity.set(0, 0, -10);
 		this.world.broadphase = new CANNON.NaiveBroadphase();
 
+		// passes a Terrain to the addObject function (declared below)
 		this.addObject(new Terrain(terrainstring));
 
+		// passes each GamePlayer of players map to the addPlayer function (declared below)
 		for(var [object_id, player] of players)
 		{
 			this.addPlayer(object_id, player);
@@ -97,79 +101,98 @@ module.exports = class Game
 		this.sendLoop();
 	}
 
-	gameLoop() //
+	gameLoop()
 	{
 		var self = this;
 		var fixedTimeStep = 1.0 / 30.0; // seconds
 		var maxSubSteps = 3;
 
+		// simple loop that happens 30x a sec.
 		this.id_gameLoop = setInterval(function() {
+			// steps the world 1/30 sec.
 			self.world.step(fixedTimeStep, fixedTimeStep, maxSubSteps);
 		}, fixedTimeStep * 1000);
 	}
 
-	sendLoop() //
+	sendLoop()
 	{
 		const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManager.js');
 
 		var self = this;
-		var fixedTimeStep = 1.0 / 30;
-		var maxSubSteps = 3;
+		var fixedTimeStep = 1.0 / 20;
 
+		// simple loop that happens 20x a sec
 		this.id_sendLoop = setInterval(function() {
+			// for each player:
 			for(var [token, player_id] of self.playerTokens)
 			{
+				// send each gameobject in the gameObject map to the player
 				for(var [object_id, gameObject] of self.gameObjects)
 				{
+					// sends only an update of the gameObject to the player
+					// usually stuff about position, rotation etc.
 					OnlinePlayerManager.sendMessage(token, {
-						receiver: 'updateobject',
+						receiver: 'updateobject', // to receiver updateobject
 						type: gameObject.type,
 						object: gameObject.downloadUpdates()
 					});
 				}
 			}
-		}, fixedTimeStep * 1000);		
+		}, fixedTimeStep * 1000);	
 	}
 
+	// function that consolidates all of the trouble of adding objects to the game
 	addObject(object)
 	{
 		const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManager.js');
 
+		// if the object with the id already exists, something broke...
 		if(this.gameObjects.has(object.id)) return;
 
+		// adds the object to the map, then uses the object.addTo function to add the object to the world
 		this.gameObjects.set(object.id, object);
 		object.addTo(this.world);
 
+		// sends data about the object to each player
 		for(var [token, player_id] of this.playerTokens)
 		{
-			OnlinePlayerManager.sendMessage(token, {
-				receiver: 'addobject',
-				type: object.type,
-				object: object.downloadInitial()
-			});
+			// sends all the info about the gameObject, like all of the data to create the mesh in ThreeJS
+			if(object.token && token != object.token)
+			{
+				OnlinePlayerManager.sendMessage(token, {
+					receiver: 'addobject', // to receiver addobject
+					type: object.type,
+					self: false,
+					object: object.downloadInitial()
+				});
+			}
 		}
 	}
 
-	removeObject(object_id) //
+	// function that consolidates all of the trouble of removing objects from the game
+	removeObject(object_id)
 	{
 		const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManager.js');
 
+		// if the object with the id doesn't exist...something really broke
 		if(!this.gameObjects.has(object_id)) return;
 
+		// removes the object from the world, then from the gameObject map
 		this.gameObjects.get(object_id).removeFrom(this.world);
 		this.gameObjects.delete(object_id);
 
+		// sends the id of the gameObject to remove to all of the players
 		for(var [token, player_id] of this.playerTokens)
 		{
 			OnlinePlayerManager.sendMessage(token, {
-				receiver: 'removeobject',
+				receiver: 'removeobject', // to receiver removeobject
 				object_id: object_id
 			});
 		}
 	}
 
-	// runs routine stuff when the player is connected, like downloading map
-	// probably don't need a player disconnect, for now
+	// when a player connects, they need to get all of the objects in gameObjects map, so this method
+	// sends all of them to the player
 	playerConnect(token)
 	{
 		const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManager.js');
@@ -177,20 +200,43 @@ module.exports = class Game
 		for(var [object_id, gameObject] of this.gameObjects)
 		{
 			if(gameObject.token != token)
+			{	
+				OnlinePlayerManager.sendMessage(token, {
+					receiver: 'addobject', // to receiver addobject
+					type: gameObject.type,
+					self: false,
+					object: gameObject.downloadInitial()
+				});
+			}
+			else
 			{
 				OnlinePlayerManager.sendMessage(token, {
 					receiver: 'addobject',
 					type: gameObject.type,
+					self: true,
 					object: gameObject.downloadInitial()
 				});
 			}
 		}
 	}
 
+	// takes all user input stuff
 	handleMessage(token, receiver, message)
 	{
+		var gameObject = this.gameObjects.get(this.playerTokens.get(token));
+
 		switch(receiver)
 		{
+			case 'controls':
+				if(message.controls)
+					gameObject.updateControls(message.controls);
+				break;
+			case 'team_chat':
+				// future stuff to send messages between players
+				break;
+			case 'match_chat':
+				// future stuff to send messages between players
+				break;
 			default:
 				break;
 		}

@@ -4,10 +4,10 @@ module.exports = class GameObject
 {
 	constructor(id, type, mass)
 	{
-		this.id = id;
-		this.type = type;
+		this.id = id; // object_id
+		this.type = type; // "terrain", "player", "chest"...
 
-		this.body = new CANNON.Body({
+		this.body = new CANNON.Body({ //defines the cannonjs body
 			mass: mass
 		});
 	}
@@ -40,7 +40,7 @@ module.exports = class GameObject
 			z_quat: -1 * this.body.quaternion.y,
 			w_quat: this.body.quaternion.w
 		}
-	} //268
+	}
 
 	downloadUpdates() 
 	{

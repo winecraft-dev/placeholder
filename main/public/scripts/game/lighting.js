@@ -5,11 +5,11 @@ function createSpotLight(color,pos,angle,dis,intens,pen)
 	light.castShadow = true;
 	light.shadow.mapSize.width = 1024;
 	light.shadow.mapSize.height = 1024;
-	Scene.add(light);
+	scene.add(light);
 
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
-	Scene.add(helper);
+	scene.add(helper);
 }
 
 function createSunLight(intens,pos,rot)
@@ -22,16 +22,16 @@ function createSunLight(intens,pos,rot)
 	let lightTarget = new THREE.Object3D();
 	lightTarget.position.copy(rot);
 	light.target = lightTarget;
-	Scene.add(lightTarget);
-	Scene.add(light);
+	scene.add(lightTarget);
+	scene.add(light);
 
 	//add ambient
 	var ambientLight = new THREE.AmbientLight(0xffffff);
-	Scene.add(ambientLight);
+	scene.add(ambientLight);
 
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
-	Scene.add(helper);
+	scene.add(helper);
 
 	let timeCycle = 0;
 
@@ -75,5 +75,5 @@ function createAmbientLight(color)
 {
 	//color Ex: 0x404040
 	var light = new THREE.AmbientLight(color); // soft white light
-	Scene.add(light);
+	scene.add(light);
 }

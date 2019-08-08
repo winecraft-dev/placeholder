@@ -35,7 +35,7 @@ function createFallowCamera(scene,parent,options)
 
 function createStaticCamera()
 {
-
+	
 }
 
 function createFlyCamera(scene,pos)
