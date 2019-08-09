@@ -28,30 +28,25 @@ function createSunLight(scene,intens,time)
 	//add ambient
 	var ambientLight = new THREE.AmbientLight(0xffffff);
 	scene.add(ambientLight);
-<<<<<<< HEAD
 
 	//add sunobject
-	let sungeo = new THREE.SphereGeometry(20,10,10);
+	let sungeo = new THREE.SphereGeometry(40,10,10);
 	let material = new THREE.MeshBasicMaterial({color: 0xffffff});
 	let sunObject = new THREE.Mesh(sungeo,material);
 	scene.add(sunObject);
-=======
->>>>>>> master
 
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
 	scene.add(helper);
-<<<<<<< HEAD
-=======
 
 	let timeCycle = 0;
->>>>>>> master
 
 	this.Update = function()
 	{
 		let timeCycle = convertTime(this.realTime);
-
 		light.position.set(0,-1000*Math.cos(timeCycle),1000*Math.sin(timeCycle));
+		light.position.add(Camera.camera.position);
+		lightTarget.position.copy(Camera.camera.position);
 		sunObject.position.copy(light.position);
 
 		let phase = getDayPhase(this.realTime);
@@ -75,6 +70,7 @@ function createSunLight(scene,intens,time)
 
 		ambientLight.color.lerp(color,.05);
 		light.color.lerp(color,.05);
+		material.color.lerp(color,.05);
 
 		if(this.realTime > 24)
 			this.realTime-=24;
@@ -94,9 +90,9 @@ function createSunLight(scene,intens,time)
 			return 'sunrise';
 		else if(time<17)
 			return 'day';
-		else if(time<19.5)
+		else if(time<18.5)
 			return 'sunset';
-		else if(time>19.5)
+		else if(time>18.5)
 			return 'night';
 	}
 }

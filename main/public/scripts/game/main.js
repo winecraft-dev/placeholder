@@ -38,7 +38,7 @@ window.addEventListener('resize',function(){
 	Camera.camera.updateProjectionMatrix();
 });
 
-let sun = new createSunLight(3,new THREE.Vector3(5,10,0),new THREE.Vector3(1,0,0));
+let sun = new createSunLight(scene,4,0);
 
 var lastMousePos = {x:0,y:0};
 //set update loop for all classes
@@ -55,7 +55,7 @@ animate();
 
 connection = new Connection($('#ip').text(), $('#token').text());
 
-function checkInputs() 
+function checkInputs()
 {
 	/*
 		this stuff will be different for every game and will get complicated
