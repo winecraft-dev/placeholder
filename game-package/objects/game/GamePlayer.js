@@ -17,7 +17,11 @@ module.exports = class GamePlayer extends GameObject
 		this.cylinder_height = 3;
 		this.cylinder_numSegments = 20;
 
+		this.walkRate = 1;
+
 		this.body.addShape(new CANNON.Cylinder(this.cylinder_radiusTop, this.cylinder_radiusBot, this.cylinder_height, this.cylinder_numSegments));
+		this.body.fixedRotation = true;
+		this.body.updateMassProperties();
 	}
 
 	setTeam(team)
@@ -36,5 +40,31 @@ module.exports = class GamePlayer extends GameObject
 		base.numSegments = this.cylinder_numSegments;
 		
 		return base;
+	}
+
+	updateControls(controls)
+	{
+		/*
+		if(controls.up == true)
+		{
+			this.body.velocity.set(5, 0, 0);
+		}
+		if(controls.down == true)
+		{
+			this.body.velocity.set(-5, 0, 0);
+		}
+		if(controls.left == true)
+		{
+			this.body.velocity.set(0, -5, 0);
+		}
+		if(controls.right == true)
+		{
+			this.body.velocity.set(0, 5, 0);
+		}
+		if(controls.jump == true)
+		{
+			this.body.velocity.set(0, 0, 5);
+		}
+		*/
 	}
 }
