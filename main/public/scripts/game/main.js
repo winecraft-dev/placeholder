@@ -38,7 +38,8 @@ window.addEventListener('resize',function(){
 	Camera.camera.updateProjectionMatrix();
 });
 
-let sun = new createSunLight(scene,4,0);
+var sun = new createSunLight(scene,4,0);
+var modelLoader = new ModelLoader(scene);
 
 var lastMousePos = {x:0,y:0};
 //set update loop for all classes
