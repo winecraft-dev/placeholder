@@ -45,8 +45,8 @@ function createSunLight(scene,intens,time)
 	{
 		let timeCycle = convertTime(this.realTime);
 		light.position.set(0,-1000*Math.cos(timeCycle),1000*Math.sin(timeCycle));
-		light.position.add(Camera.camera.position);
-		lightTarget.position.copy(Camera.camera.position);
+		light.position.add(global_camera.camera.position);
+		lightTarget.position.copy(global_camera.camera.position);
 		sunObject.position.copy(light.position);
 
 		let phase = getDayPhase(this.realTime);
@@ -75,7 +75,7 @@ function createSunLight(scene,intens,time)
 		if(this.realTime > 24)
 			this.realTime-=24;
 
-		this.realTime += .01;
+		//this.realTime += .01;
 
 	}
 	function convertTime(time)
