@@ -1,5 +1,8 @@
 var objectList = new Map();
 
+var selfID = null;
+var selfRotationSpeed = .003;
+
 function addObject(id, type, self, object)
 {
 	switch(type)
@@ -9,6 +12,8 @@ function addObject(id, type, self, object)
 			break;
 		case 'player':
 			objectList.set(id, new Player(id, self, object));
+			if(self)
+				selfID = id;
 			break;
 	}
 }
@@ -30,6 +35,46 @@ function removeObject(id)
 	}
 }
 
+function getSelfPosition()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getPosition();
+	}
+}
+
+function getSelfRotation()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getRotation();
+	}
+	return null;
+}
+
+function getSelfQuaternion()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getQuaternion();
+	}
+	return null;
+}
+
+function updateSelfPosition()
+{
+	// TO DO
+}
+
+function updateSelfRotation(x, y)
+{
+	if(selfID != null)
+	{
+		objectList.get(selfID).updateRotation(x, y);
+	}
+	return null;
+}
+
 function Terrain(id, object)
 {
 	this.update = function(object) {
@@ -43,7 +88,7 @@ function Terrain(id, object)
 	};
 
 	this.remove = function() {
-		scene.remove(this.mesh);
+		global_scene.remove(this.mesh);
 	};
 
 	this.colorFace = function(face, biome) {
@@ -98,25 +143,49 @@ function Terrain(id, object)
 	this.mesh.castShadow = true;
 	this.update(object);
 
-	scene.add(this.mesh); // adds the mesh to the global scene
-
-	
+	global_scene.add(this.mesh); // adds the mesh to the global scene	
 }
 
 function Player(id, self, object)
 {
 	this.update = function(object) {
 		this.mesh.position.set(object.x_pos, object.y_pos, object.z_pos);
-		this.mesh.quaternion.copy({
+		/*this.mesh.quaternion.copy({
 			x: object.x_quat,
 			y: object.y_quat,
 			z: object.z_quat,
 			w: object.w_quat
-		});
+		});*/
 	};
 
 	this.remove = function() {
-		scene.remove(this.mesh);
+		global_scene.remove(this.mesh);
+	};
+
+	this.getPosition = function() {
+		return this.mesh.position;
+	};
+
+	this.getRotation = function() {
+		return this.mesh.rotation;
+	};
+
+	this.getQuaternion = function() {
+		return this.mesh.quaternion;
+	};
+
+	this.updateRotation = function(x, y) {
+		var x_rot = this.mesh.rotation.x + (y * selfRotationSpeed * -1);
+		var y_rot = this.mesh.rotation.y + (x * selfRotationSpeed * -1);
+		var z_rot = 0;
+
+		if(x_rot >= Math.PI / 2)
+			x_rot = Math.PI / 2;
+		else if(x_rot <= Math.PI / -2)
+			x_rot = Math.PI / -2;
+
+
+		this.mesh.rotation.set(x_rot, y_rot, z_rot, 'YXZ');
 	};
 
 	// actual construction of the player object:
@@ -136,5 +205,6 @@ function Player(id, self, object)
 	this.mesh.castShadow = true;
 	this.update(object);
 
-	scene.add(this.mesh);
+	//if(!this.self)
+		global_scene.add(this.mesh);
 }

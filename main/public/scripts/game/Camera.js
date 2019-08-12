@@ -1,4 +1,4 @@
-
+/*
 function createFallowCamera(scene,parent,options)
 {
 	let startingRotation = typeof(options.startingRotation)=='undefined'?new CANNON.Vec3(0,0,0):options.startingRotation;
@@ -62,4 +62,27 @@ function createFlyCamera(scene,pos)
 		this.camera.rotation.copy(this.rotation);
 		this.mouseDif.set(0,0,0)
 	}
+}*/
+
+function SelfCamera(position, width, height)
+{
+	this.updatePosition = function(position)
+	{
+		this.camera.position.copy(position);
+	}
+
+	this.updateRotation = function(rotation)
+	{
+		this.camera.rotation.copy(rotation);
+	}
+
+	this.updateAspect = function(width, height)
+	{
+		this.camera.aspect = width / height;
+		this.camera.updateProjectionMatrix();
+	}
+
+	this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+	this.camera.position.copy(position);
+	global_scene.add(this.camera);
 }
