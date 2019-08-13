@@ -36,11 +36,11 @@ function Inputs(/* might have a way to get keys->action binds*/)
 
 	this.updateRotation = function(x, y)
 	{
-		console.log(y);
+		//console.log(y);
 		this.mousePosition.x += x;
 		this.mousePosition.y += y;
 
-		// calls global function to 
+		// calls global function to
 		updateSelfRotation(this.mousePosition.x - this.lastMousePos.x, this.mousePosition.y - this.lastMousePos.y);
 
 		this.lastMousePos.x = this.mousePosition.x;

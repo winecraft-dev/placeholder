@@ -35,16 +35,16 @@ function createFallowCamera(scene,parent,options)
 
 function createStaticCamera()
 {
-	
-}
 
-function createFlyCamera(scene,pos)
+}
+*/
+function createFlyCamera(pos)
 {
 	//camera Stuff
 	this.position = pos;
 	this.rotation = new THREE.Euler(0,0,0,'YXZ');
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-	scene.add(this.camera);
+	global_scene.add(this.camera);
 	//inputs
 	this.forwardInput = 0;
 	this.sideInput = 0;
@@ -62,7 +62,7 @@ function createFlyCamera(scene,pos)
 		this.camera.rotation.copy(this.rotation);
 		this.mouseDif.set(0,0,0)
 	}
-}*/
+}
 
 function SelfCamera(position, width, height)
 {

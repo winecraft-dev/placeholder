@@ -143,14 +143,14 @@ function Terrain(id, object)
 	this.mesh.castShadow = true;
 	this.update(object);
 
-	global_scene.add(this.mesh); // adds the mesh to the global scene	
+	global_scene.add(this.mesh); // adds the mesh to the global scene
 }
 
 function Player(id, self, object)
 {
 	this.update = function(object) {
-		this.mesh.position.set(object.x_pos, object.y_pos, object.z_pos);
-		/*this.mesh.quaternion.copy({
+		this.gameObject.position.set(object.x_pos, object.y_pos, object.z_pos);
+		/*this.gameObject.quaternion.copy({
 			x: object.x_quat,
 			y: object.y_quat,
 			z: object.z_quat,
@@ -159,24 +159,24 @@ function Player(id, self, object)
 	};
 
 	this.remove = function() {
-		global_scene.remove(this.mesh);
+		global_scene.remove(this.gameObject);
 	};
 
 	this.getPosition = function() {
-		return this.mesh.position;
+		return this.gameObject.position;
 	};
 
 	this.getRotation = function() {
-		return this.mesh.rotation;
+		return this.gameObject.rotation;
 	};
 
 	this.getQuaternion = function() {
-		return this.mesh.quaternion;
+		return this.gameObject.quaternion;
 	};
 
 	this.updateRotation = function(x, y) {
-		var x_rot = this.mesh.rotation.x + (y * selfRotationSpeed * -1);
-		var y_rot = this.mesh.rotation.y + (x * selfRotationSpeed * -1);
+		var x_rot = this.gameObject.rotation.x + (y * selfRotationSpeed * -1);
+		var y_rot = this.gameObject.rotation.y + (x * selfRotationSpeed * -1);
 		var z_rot = 0;
 
 		if(x_rot >= Math.PI / 2)
@@ -185,7 +185,7 @@ function Player(id, self, object)
 			x_rot = Math.PI / -2;
 
 
-		this.mesh.rotation.set(x_rot, y_rot, z_rot, 'YXZ');
+		this.gameObject.rotation.set(x_rot, y_rot, z_rot, 'YXZ');
 	};
 
 	// actual construction of the player object:
@@ -200,11 +200,24 @@ function Player(id, self, object)
 		color: this.self == true ? new THREE.Color(0x0000ff) : new THREE.Color(0xff0000)
 	});
 
+	function setMaterial(objects,mat)
+	{
+		objects.children.forEach((object)=>{
+			console.log(mat);
+			object.material = mat;
+		});
+	}
+
 	this.mesh = new THREE.Mesh(this.geometry, this.material);
 	this.mesh.receiveShadow = true;
 	this.mesh.castShadow = true;
+
+	let model = global_modelLoader.getObject("bigHead");
+	setMaterial(model,this.material);
+	this.gameObject = model;
+	console.log(this.gameObject);
 	this.update(object);
 
 	//if(!this.self)
-		global_scene.add(this.mesh);
+		global_scene.add(this.gameObject);
 }

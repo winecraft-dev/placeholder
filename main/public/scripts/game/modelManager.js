@@ -1,20 +1,45 @@
-function ModelLoader(scene)
+function ModelLoader()
 {
+  this.preloaded = new Map();
   let loader = new THREE.GLTFLoader();
-  loader.load('/models/BigHeadPerson.glb',function(gltf){
-    console.log(gltf);
-    let person = new THREE.Object3D();
-    /*
-    gltf.forEach(function(object){
-      let part = object;
-      part.material = new THREE.MeshStandardMaterial({color:0xff0fff});
-      part.castShadow = true;
-  		part.receiveShadow = true;
-      person.add();
+
+  this.preload = function(path,name)
+  {
+    let self = this;
+    loader.load(path,function(gltf){
+      let parentObject = new THREE.Object3D();
+      let childrenlength = gltf.scene.children.length;
+      for(let i=0;i<childrenlength;i++)
+      {
+        parentObject.add(gltf.scene.children[0]);
+      }
+      self.preloaded.set(name,parentObject);
     });
-    */
-    scene.add(gltf.scene.children[0]);
-    scene.add(gltf.scene.children[1]);
-    scene.add(gltf.scene.children[2]);
-  });
+  }
+
+  this.addToScene = function(name,options)
+  {
+    if(this.preloaded.has(name))
+    {
+      let object = this.preloaded.get(name).clone();
+      object.position.copy(typeof(options.position)=='undefined'?new THREE.Vector3(0,0,0):options.position);
+      global_scene.add(object);
+    }
+    else
+    {
+      setTimeout(()=>{this.addToScene(name,options)},500);
+    }
+  }
+  this.getObject = function(name)
+  {
+    if(this.preloaded.has(name))
+    {
+      let object = this.preloaded.get(name).clone();
+      return object;
+    }
+    else
+    {
+      setTimeout(()=>{this.addToScene(name,options)},500);
+    }
+  }
 }

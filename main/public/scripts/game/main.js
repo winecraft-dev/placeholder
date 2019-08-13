@@ -4,6 +4,7 @@ global_renderer = null;
 global_connection = null;
 global_inputs = null;
 global_camera = null;
+global_modelLoader = null;
 
 $(document).ready(function() {
 	//create global_scene and set props
@@ -40,17 +41,23 @@ $(document).ready(function() {
 	document.body.appendChild(global_renderer.domElement);
 	global_renderer.autoClearColor = false;
 
+	global_modelLoader = new ModelLoader();
 
-	let sun = new createSunLight(global_scene, 4, 8);
+	global_modelLoader.preload('/models/BigHeadPerson.glb','bigHead');
+
+	global_modelLoader.addToScene("bigHead",{position:new THREE.Vector3(5,10,0)});
 
 	// sets up connection
 	global_camera = new SelfCamera(new THREE.Vector3(10,10,25), window.innerWidth, window.innerHeight);
+	//global_camera = new createFlyCamera(new THREE.Vector3(0,0,0));
 	global_connection = new Connection($('#ip').text(), $('#token').text());
 	global_inputs = new Inputs();
 
+	let sun = new createSunLight(global_scene, 4, 8);
+
 	window.addEventListener('resize',function(){
 		global_renderer.setSize(window.innerWidth,window.innerHeight);
-		camera.updateAspect(window.innerWidth, window.innerHeight);
+		global_camera.updateAspect(window.innerWidth, window.innerHeight);
 	});
 
 	//set update loop for all classes
