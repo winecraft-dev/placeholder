@@ -25,7 +25,7 @@ function Inputs(/* might have a way to get keys->action binds*/)
 		fire3: false
 	};
 	this.inPointerLock = false;
-	this.mousePosition = { x: 0, y: 0 }
+	this.mousePosition = { x: 0, y: 0 };
 	this.lastMousePos = { x: 0, y: 0 };
 
 	this.actionUpdate = function(key, up)
@@ -36,7 +36,6 @@ function Inputs(/* might have a way to get keys->action binds*/)
 
 	this.updateRotation = function(x, y)
 	{
-		console.log(y);
 		this.mousePosition.x += x;
 		this.mousePosition.y += y;
 
@@ -72,10 +71,17 @@ function Inputs(/* might have a way to get keys->action binds*/)
 
 	this.id_sendLoop = setInterval(function() {
 		// calls global websocket connection object
+		var selfquat = getSelfQuaternion();
+		var quaternion = {
+			x: selfquat._x,
+			y: selfquat._y,
+			z: selfquat._z,
+			w: selfquat._w
+		};
 		global_connection.send({
 			receiver: 'controls',
 			controls: self.actions,
-			quaternion: getSelfQuaternion()
+			quaternion: quaternion
 		});
 	}, 1000 / 20); // tweaking this will get you kicked for packet spam
 
