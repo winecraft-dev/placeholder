@@ -39,7 +39,7 @@ function ModelLoader()
     }
     else
     {
-      setTimeout(()=>{this.addToScene(name,options)},500);
+      setTimeout(()=>{this.getObject(name)},500);
     }
   }
 }
