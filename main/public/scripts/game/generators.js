@@ -35,46 +35,6 @@ function removeObject(id)
 	}
 }
 
-function getSelfPosition()
-{
-	if(selfID != null)
-	{
-		return objectList.get(selfID).getPosition();
-	}
-}
-
-function getSelfRotation()
-{
-	if(selfID != null)
-	{
-		return objectList.get(selfID).getRotation();
-	}
-	return null;
-}
-
-function getSelfQuaternion()
-{
-	if(selfID != null)
-	{
-		return objectList.get(selfID).getQuaternion();
-	}
-	return null;
-}
-
-function updateSelfPosition()
-{
-	// TO DO
-}
-
-function updateSelfRotation(x, y)
-{
-	if(selfID != null)
-	{
-		objectList.get(selfID).updateRotation(x, y);
-	}
-	return null;
-}
-
 function Terrain(id, object)
 {
 	this.update = function(object) {
@@ -151,7 +111,7 @@ function Player(id, self, object)
 	this.update = function(object) {
 		if(!this.self)
 		{
-			this.mesh.quaternion.copy({
+			this.head.mesh.quaternion.copy({
 				x: object.x_facing,
 				y: object.y_facing,
 				z: object.z_facing,
@@ -163,7 +123,9 @@ function Player(id, self, object)
 	};
 
 	this.remove = function() {
-		global_scene.remove(this.mesh);
+		global_scene.remove(this.head.mesh);
+		global_scene.remove(this.body.mesh);
+		global_scene.remove(this.feet.mesh);
 	};
 
 	this.getPosition = function() {
@@ -178,6 +140,7 @@ function Player(id, self, object)
 		return this.mesh.quaternion;
 	};
 
+	// function called by inputManager to update the rotation of the self player
 	this.updateRotation = function(x, y) {
 		var x_rot = this.mesh.rotation.x + (y * selfRotationSpeed * -1);
 		var y_rot = this.mesh.rotation.y + (x * selfRotationSpeed * -1);
@@ -196,7 +159,8 @@ function Player(id, self, object)
 	this.id = id;
 	this.self = self;
 
-	this.geometry = new THREE.CylinderGeometry(object.radiusTop, object.radiusBot, object.height, object.numSegments);
+	this.position = new THREE.Vector3(0, 0, 0); // default here
+	this.facing = new THREE.Quaternion(0, 0, 0, 0);
 
 	this.material = new THREE.MeshStandardMaterial({
 		roughness: .9,
@@ -204,11 +168,90 @@ function Player(id, self, object)
 		color: this.self == true ? new THREE.Color(0x0000ff) : new THREE.Color(0xff0000)
 	});
 
-	this.mesh = new THREE.Mesh(this.geometry, this.material);
-	this.mesh.receiveShadow = true;
-	this.mesh.castShadow = true;
-	this.update(object);
+	this.head = {
+		geometry: new THREE.BoxGeometry(object.head_radius, 
+			object.head_radius, 
+			object.head_radius
+		),
+		offset: new THREE.Vector3(object.head_offset.x,
+			object.head_offset.y,
+			object.head_offset.z
+		)
+	};
+	this.body = {
+		geometry: new THREE.CylinderGeometry(object.body_radiusTop, 
+			object.body_radiusBot, 
+			object.body_height, 
+			object.body_numSegments
+		),
+		offset: new THREE.Vector3(object.body_offset.x,
+			object.body_offset.y,
+			object.body_offset.z
+		)
+	};
+	this.feet = {
+		geometry: new THREE.SphereGeometry(object.feet_radius, object.body_numSegments, object.body_numSegments),
+		offset: new THREE.Vector3(object.feet_offset.x,
+			object.feet_offset.y,
+			object.feet_offset.z
+		)
+	};
+	this.head.mesh = new THREE.Mesh(this.head.geometry, this.material);
+	this.head.mesh.receiveShadow = true;
+	this.head.mesh.castShadow = true;
+	this.body.mesh = new THREE.Mesh(this.body.geometry, this.material);
+	this.body.mesh.receiveShadow = true;
+	this.body.mesh.castShadow = true;
+	this.feet.mesh = new THREE.Mesh(this.feet.geometry, this.material);
+	this.feet.mesh.receiveShadow = true;
+	this.feet.mesh.castShadow = true;
 
-	//if(!this.self)
-		global_scene.add(this.mesh);
+	this.update(object); //
+
+	if(!this.self)
+	{
+		global_scene.add(this.head.mesh);
+		global_scene.add(this.body.mesh);
+		global_scene.add(this.feet.mesh);
+	}
+}
+
+function getSelfPosition()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getPosition();
+	}
+}
+
+function getSelfRotation()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getRotation();
+	}
+	return null;
+}
+
+function getSelfQuaternion()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getQuaternion();
+	}
+	return null;
+}
+
+function updateSelfPosition()
+{
+	// TO DO
+}
+
+function updateSelfRotation(x, y)
+{
+	if(selfID != null)
+	{
+		objectList.get(selfID).updateRotation(x, y);
+	}
+	return null;
 }

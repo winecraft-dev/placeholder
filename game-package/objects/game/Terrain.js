@@ -188,7 +188,7 @@ module.exports = class Terrain extends GameObject
 			});
 		}
 
-		base.vertices = converted_vertices;
+		base.vertices = converted_vertices; // this is not a shape BECAUSE it is a trimesh
 		base.faces = this.faces;
 
 		return base;

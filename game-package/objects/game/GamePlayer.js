@@ -12,16 +12,22 @@ module.exports = class GamePlayer extends GameObject
 		this.username = username;
 		this.team = 0;
 
-		this.cylinder_radiusTop = 1;
-		this.cylinder_radiusBot = 1;
-		this.cylinder_height = 3;
-		this.cylinder_numSegments = 20;
-
 		this.facing = new CANNON.Quaternion(0, 0, 0, 0);
 
 		this.walkRate = 1;
 
-		this.body.addShape(new CANNON.Cylinder(this.cylinder_radiusTop, this.cylinder_radiusBot, this.cylinder_height, this.cylinder_numSegments));
+		this.headShape = new CANNON.Box(new CANNON.Vec3(1, 1, 1));
+		this.headOffset = new CANNON.Vec3(0, 0, 1.5 + 1);
+
+		this.bodyShape = new CANNON.Cylinder(1, 1, 3, 20);
+		this.bodyOffset = new CANNON.Vec3(0, 0, 0);
+
+		this.feetShape = new CANNON.Sphere(1);
+		this.feetOffset = new CANNON.Vec3(0, 0, -1.5);
+
+		this.body.addShape(this.feetShape, this.feetOffset);
+		this.body.addShape(this.bodyShape, this.bodyOffset);
+		this.body.addShape(this.headShape, this.headOffset);
 		this.body.fixedRotation = true;
 		this.body.updateMassProperties();
 	}
@@ -36,10 +42,7 @@ module.exports = class GamePlayer extends GameObject
 		var base = super.downloadInitial();
 
 		base.username = this.username;
-		base.radiusTop = this.cylinder_radiusTop;
-		base.radiusBot = this.cylinder_radiusBot;
-		base.height = this.cylinder_height;
-		base.numSegments = this.cylinder_numSegments;
+		base.
 		
 		return base;
 	}
@@ -60,9 +63,6 @@ module.exports = class GamePlayer extends GameObject
 	{
 		this.facing = new CANNON.Quaternion(-1 * quaternion.x, -1 * quaternion.z, -1 * quaternion.y, quaternion.w);
 		
-		var x_vel = ;
-		var y_vel = controls.move_forward;
-		var z_vel = controls.jump;
-		this.body.velocity.set(x_vel, y_vel, z_vel);
+		//this.body.velocity.set(x_vel, y_vel, z_vel);
 	}
 }
