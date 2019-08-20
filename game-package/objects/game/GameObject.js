@@ -27,6 +27,11 @@ module.exports = class GameObject
 		this.body.position = new CANNON.Vec3(x_pos, y_pos, z_pos);
 	}
 
+	updateQuaternion(x_quat, y_quat, z_quat, w_quat)
+	{
+		this.body.quaternion = new CANNON.Quaternion(x_quat, y_quat, z_quat, w_quat);
+	}
+
 	downloadInitial() 
 	{
 		return {

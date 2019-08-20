@@ -228,8 +228,8 @@ module.exports = class Game
 		switch(receiver)
 		{
 			case 'controls':
-				if(message.controls)
-					gameObject.updateControls(message.controls);
+				if(message.controls && message.quaternion)
+					gameObject.updateControls(message.controls, message.quaternion);
 				break;
 			case 'team_chat':
 				// future stuff to send messages between players

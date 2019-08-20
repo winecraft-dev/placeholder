@@ -17,6 +17,8 @@ module.exports = class GamePlayer extends GameObject
 		this.cylinder_height = 3;
 		this.cylinder_numSegments = 20;
 
+		this.facing = new CANNON.Quaternion(0, 0, 0, 0);
+
 		this.walkRate = 1;
 
 		this.body.addShape(new CANNON.Cylinder(this.cylinder_radiusTop, this.cylinder_radiusBot, this.cylinder_height, this.cylinder_numSegments));
@@ -42,29 +44,25 @@ module.exports = class GamePlayer extends GameObject
 		return base;
 	}
 
-	updateControls(controls)
+	downloadUpdates()
 	{
-		/*
-		if(controls.up == true)
-		{
-			this.body.velocity.set(5, 0, 0);
-		}
-		if(controls.down == true)
-		{
-			this.body.velocity.set(-5, 0, 0);
-		}
-		if(controls.left == true)
-		{
-			this.body.velocity.set(0, -5, 0);
-		}
-		if(controls.right == true)
-		{
-			this.body.velocity.set(0, 5, 0);
-		}
-		if(controls.jump == true)
-		{
-			this.body.velocity.set(0, 0, 5);
-		}
-		*/
+		var base = super.downloadUpdates();
+
+		base.x_facing = -1 * this.facing.x;
+		base.y_facing = -1 * this.facing.z;
+		base.z_facing = -1 * this.facing.y;
+		base.w_facing = this.facing.w;
+
+		return base;
+	}
+
+	updateControls(controls, quaternion)
+	{
+		this.facing = new CANNON.Quaternion(-1 * quaternion.x, -1 * quaternion.z, -1 * quaternion.y, quaternion.w);
+		
+		var x_vel = ;
+		var y_vel = controls.move_forward;
+		var z_vel = controls.jump;
+		this.body.velocity.set(x_vel, y_vel, z_vel);
 	}
 }

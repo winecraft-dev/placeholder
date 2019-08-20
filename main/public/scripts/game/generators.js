@@ -149,13 +149,17 @@ function Terrain(id, object)
 function Player(id, self, object)
 {
 	this.update = function(object) {
-		this.gameObject.position.set(object.x_pos, object.y_pos, object.z_pos);
-		/*this.gameObject.quaternion.copy({
-			x: object.x_quat,
-			y: object.y_quat,
-			z: object.z_quat,
-			w: object.w_quat
-		});*/
+		if(!this.self)
+		{
+			this.mesh.quaternion.copy({
+				x: object.x_facing,
+				y: object.y_facing,
+				z: object.z_facing,
+				w: object.w_facing
+			});
+		}
+		// later this position will need to be interpolated, not just straight up set
+		this.mesh.position.set(object.x_pos, object.y_pos, object.z_pos);
 	};
 
 	this.remove = function() {
