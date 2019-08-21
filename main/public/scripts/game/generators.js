@@ -190,7 +190,7 @@ function Player(id, self, object)
 
 	if(!this.self)
 		global_scene.add(this.gameObject);
-}
+
 	this.head = {
 		geometry: new THREE.BoxGeometry(object.head_radius,
 			object.head_radius,
