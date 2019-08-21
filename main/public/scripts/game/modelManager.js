@@ -11,6 +11,8 @@ function ModelLoader()
       let childrenlength = gltf.scene.children.length;
       for(let i=0;i<childrenlength;i++)
       {
+        gltf.scene.children[0].receiveShadow = true;
+        gltf.scene.children[0].castShadow = true;
         parentObject.add(gltf.scene.children[0]);
       }
       self.preloaded.set(name,parentObject);

@@ -151,15 +151,15 @@ function Player(id, self, object)
 	this.update = function(object) {
 		if(!this.self)
 		{
-			this.mesh.quaternion.copy({
-				x: object.x_facing,
-				y: object.y_facing,
-				z: object.z_facing,
-				w: object.w_facing
-			});
+			let convert = new THREE.Euler(0,0,0,'YXZ');
+			convert.setFromQuaternion(new THREE.Quaternion(object.x_facing,object.y_facing,object.z_facing,object.w_facing));
+			convert.y += Math.PI
+			convert.x *= -1;
+			this.gameObject.rotation.set(0,convert.y,convert.z);
+			this.gameObject.children[2].rotation.set(convert.x,0,0);
 		}
 		// later this position will need to be interpolated, not just straight up set
-		this.mesh.position.set(object.x_pos, object.y_pos, object.z_pos);
+		this.gameObject.position.set(object.x_pos, object.y_pos, object.z_pos);
 	};
 
 	this.remove = function() {
@@ -195,6 +195,7 @@ function Player(id, self, object)
 	// actual construction of the player object:
 	this.id = id;
 	this.self = self;
+	this.cameraOffset = new THREE.Vector3(0,1,0);
 
 	this.geometry = new THREE.CylinderGeometry(object.radiusTop, object.radiusBot, object.height, object.numSegments);
 
@@ -207,7 +208,6 @@ function Player(id, self, object)
 	function setMaterial(objects,mat)
 	{
 		objects.children.forEach((object)=>{
-			console.log(mat);
 			object.material = mat;
 		});
 	}
@@ -219,9 +219,8 @@ function Player(id, self, object)
 	let model = global_modelLoader.getObject("bigHead");
 	setMaterial(model,this.material);
 	this.gameObject = model;
-	console.log(this.gameObject);
 	this.update(object);
 
-	//if(!this.self)
+	if(!this.self)
 		global_scene.add(this.gameObject);
 }

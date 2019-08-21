@@ -69,6 +69,7 @@ function SelfCamera(position, width, height)
 	this.updatePosition = function(position)
 	{
 		this.camera.position.copy(position);
+		this.camera.position.add(objectList.get(selfID).cameraOffset);
 	}
 
 	this.updateRotation = function(rotation)

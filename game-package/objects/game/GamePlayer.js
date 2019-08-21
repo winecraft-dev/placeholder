@@ -40,7 +40,7 @@ module.exports = class GamePlayer extends GameObject
 		base.radiusBot = this.cylinder_radiusBot;
 		base.height = this.cylinder_height;
 		base.numSegments = this.cylinder_numSegments;
-		
+
 		return base;
 	}
 
@@ -59,8 +59,8 @@ module.exports = class GamePlayer extends GameObject
 	updateControls(controls, quaternion)
 	{
 		this.facing = new CANNON.Quaternion(-1 * quaternion.x, -1 * quaternion.z, -1 * quaternion.y, quaternion.w);
-		
-		var x_vel = ;
+
+		var x_vel = 0;
 		var y_vel = controls.move_forward;
 		var z_vel = controls.jump;
 		this.body.velocity.set(x_vel, y_vel, z_vel);
