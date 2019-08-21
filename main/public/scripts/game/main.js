@@ -50,7 +50,7 @@ $(document).ready(function() {
 
 	window.addEventListener('resize',function(){
 		global_renderer.setSize(window.innerWidth,window.innerHeight);
-		camera.updateAspect(window.innerWidth, window.innerHeight);
+		global_camera.updateAspect(window.innerWidth, window.innerHeight);
 	});
 
 	//set update loop for all classes

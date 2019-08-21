@@ -4,6 +4,7 @@ const OnlinePlayerManager = require(rootDirectory + '/managers/OnlinePlayerManag
 
 const Logger = require(rootDirectory +'/objects/Logger.js');
 const Terrain = require('./Terrain.js');
+const MaterialIndex = require('./MaterialIndex.js');
 
 // temporary map text, later we'll add a way to load maps from text files or something
 var terrainstring = 
@@ -81,9 +82,10 @@ module.exports = class Game
 		this.playerTokens = new Map(); // map of player token => their avatar's object_id
 
 		// creates the world
-		this.world = new CANNON.World(); 
+		this.world = new CANNON.World();
 		this.world.gravity.set(0, 0, -10);
 		this.world.broadphase = new CANNON.NaiveBroadphase();
+		MaterialIndex.addContactMaterials(this.world);
 
 		// passes a Terrain to the addObject function (declared below)
 		this.addObject(new Terrain(terrainstring));
@@ -104,7 +106,7 @@ module.exports = class Game
 	gameLoop()
 	{
 		var self = this;
-		var fixedTimeStep = 1.0 / 30.0; // seconds
+		var fixedTimeStep = 1.0 / 60.0; // seconds
 		var maxSubSteps = 3;
 
 		// simple loop that happens 30x a sec.
@@ -251,7 +253,7 @@ module.exports = class Game
 		this.addObject(player);
 
 		// just set it to an arbirtary position
-		player.updatePosition(10, 15, 20);
+		player.updatePosition(Math.random() * 20 + 5, Math.random() * 20 + 5, 20);
 	}
 
 	hasPlayer(token)

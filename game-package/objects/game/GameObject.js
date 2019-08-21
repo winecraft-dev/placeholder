@@ -2,13 +2,14 @@ const CANNON = require('cannon');
 
 module.exports = class GameObject
 {
-	constructor(id, type, mass)
+	constructor(id, type, mass, material)
 	{
 		this.id = id; // object_id
 		this.type = type; // "terrain", "player", "chest"...
 
 		this.body = new CANNON.Body({ //defines the cannonjs body
-			mass: mass
+			mass: mass,
+			material: material
 		});
 	}
 
@@ -36,7 +37,6 @@ module.exports = class GameObject
 	{
 		return {
 			id: this.id,
-			mass: this.body.mass,
 			x_pos: this.body.position.x,
 			y_pos: this.body.position.z,
 			z_pos: this.body.position.y,

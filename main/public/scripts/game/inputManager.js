@@ -72,17 +72,20 @@ function Inputs(/* might have a way to get keys->action binds*/)
 	this.id_sendLoop = setInterval(function() {
 		// calls global websocket connection object
 		var selfquat = getSelfQuaternion();
-		var quaternion = {
-			x: selfquat._x,
-			y: selfquat._y,
-			z: selfquat._z,
-			w: selfquat._w
-		};
-		global_connection.send({
-			receiver: 'controls',
-			controls: self.actions,
-			quaternion: quaternion
-		});
+		if(selfquat != null)
+		{
+			var quaternion = {
+				x: selfquat._x,
+				y: selfquat._y,
+				z: selfquat._z,
+				w: selfquat._w
+			};
+			global_connection.send({
+				receiver: 'controls',
+				controls: self.actions,
+				quaternion: quaternion
+			});
+		}
 	}, 1000 / 20); // tweaking this will get you kicked for packet spam
 
 	document.body.getElementsByTagName('canvas')[0].addEventListener('click', function(e) {

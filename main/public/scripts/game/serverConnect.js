@@ -52,6 +52,7 @@ function Connection(ip, token)
 	});
 
 	this.ws.addEventListener('close', function(e) {
+		this.open = false;
 		console.log('close, reloading in 5 seconds');
 		setTimeout(function() {
 			window.location.reload();
