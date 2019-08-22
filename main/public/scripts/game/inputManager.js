@@ -14,16 +14,17 @@ function Inputs(/* might have a way to get keys->action binds*/)
 	var self = this;
 
 	this.actions = {
-		move_forward: false,
-		move_backward: false,
-		move_left: false,
-		move_right: false,
-		crouch: false,
-		jump: false,
-		fire1: false,
-		fire2: false,
-		fire3: false
+		move_forward: 0,
+		move_backward: 0,
+		move_left: 0,
+		move_right: 0,
+		crouch: 0,
+		jump: 0,
+		fire1: 0,
+		fire2: 0,
+		fire3: 0
 	};
+	this.downKeys = 0;
 	this.inPointerLock = false;
 	this.mousePosition = { x: 0, y: 0 };
 	this.lastMousePos = { x: 0, y: 0 };
@@ -31,19 +32,38 @@ function Inputs(/* might have a way to get keys->action binds*/)
 	this.actionUpdate = function(key, up)
 	{
 		if(this.inPointerLock == true && keyToAction.has(key))
-			this.actions[keyToAction.get(key)] = up;
+		{
+			if(up == true && this.actions[keyToAction.get(key)] == 0)
+			{
+				this.downKeys ++;
+				this.actions[keyToAction.get(key)] = this.downKeys;
+			}
+			else if(up == false)
+			{
+				this.downKeys --;
+				this.actions[keyToAction.get(key)] = 0;
+			}
+		}
 	}
 
 	this.updateRotation = function(x, y)
 	{
-		this.mousePosition.x += x;
-		this.mousePosition.y += y;
-
-		// calls global function to 
-		updateSelfRotation(this.mousePosition.x - this.lastMousePos.x, this.mousePosition.y - this.lastMousePos.y);
-
 		this.lastMousePos.x = this.mousePosition.x;
 		this.lastMousePos.y = this.mousePosition.y;
+
+		this.mousePosition.x += x;
+		this.mousePosition.y += y;
+	}
+
+	this.getMovement = function()
+	{
+		var differences = {
+			x: this.mousePosition.x - this.lastMousePos.x,
+			y: this.mousePosition.y - this.lastMousePos.y
+		};
+		this.lastMousePos.x = this.mousePosition.x;
+		this.lastMousePos.y = this.mousePosition.y;
+		return differences;
 	}
 
 	this.displayMenu = function()
@@ -57,6 +77,7 @@ function Inputs(/* might have a way to get keys->action binds*/)
 	}
 
 	window.addEventListener('keydown', function(e) {
+
 		self.actionUpdate(e.which, true);
 	}, false);
 	window.addEventListener('keyup', function(e) {
@@ -68,25 +89,6 @@ function Inputs(/* might have a way to get keys->action binds*/)
 	window.addEventListener('mouseup', function(e) {
 		self.actionUpdate(e.button, false);
 	}, false);
-
-	this.id_sendLoop = setInterval(function() {
-		// calls global websocket connection object
-		var selfquat = getSelfQuaternion();
-		if(selfquat != null)
-		{
-			var quaternion = {
-				x: selfquat._x,
-				y: selfquat._y,
-				z: selfquat._z,
-				w: selfquat._w
-			};
-			global_connection.send({
-				receiver: 'controls',
-				controls: self.actions,
-				quaternion: quaternion
-			});
-		}
-	}, 1000 / 20); // tweaking this will get you kicked for packet spam
 
 	document.body.getElementsByTagName('canvas')[0].addEventListener('click', function(e) {
 		self.hideMenu();

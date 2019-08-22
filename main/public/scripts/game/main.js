@@ -58,6 +58,7 @@ $(document).ready(function() {
 		requestAnimationFrame(animate);
 		if(getSelfPosition() != null)
 		{
+			updateSelfInputs(global_inputs.getMovement(), global_inputs.actions);
 			global_camera.updatePosition(getSelfPosition());
 			global_camera.updateRotation(getSelfRotation());
 		}
@@ -66,4 +67,22 @@ $(document).ready(function() {
 		global_renderer.render(global_scene, global_camera.camera);
 	}
 	animate();
+
+	var sendLoopId = setInterval(function() {
+		var selfquat = getSelfQuaternion();
+		if(selfquat != null)
+		{
+			var quaternion = {
+				x: selfquat._x,
+				y: selfquat._y,
+				z: selfquat._z,
+				w: selfquat._w
+			};
+			global_connection.send({
+				receiver: 'controls',
+				controls: global_inputs.actions,
+				quaternion: quaternion
+			});
+		}
+	}, 1000 / 20); // tweaking this will get you kicked for packet spam
 });

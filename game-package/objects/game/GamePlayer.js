@@ -7,7 +7,7 @@ module.exports = class GamePlayer extends GameObject
 {
 	constructor(token, username, object_id)
 	{
-		super(object_id, 'player', 10, MaterialIndex.getMaterial('playerMaterial'));
+		super(object_id, 'player', 5, MaterialIndex.getMaterial('playerMaterial'));
 
 		this.token = token;
 		this.username = username;
@@ -98,11 +98,37 @@ module.exports = class GamePlayer extends GameObject
 		// index 0 is the head
 		this.body.shapeOrientations[0].copy(new CANNON.Quaternion(-1 * quaternion.x, -1 * quaternion.z, -1 * quaternion.y, quaternion.w));
 
-		if(controls.jump /* && this.onGround? */)
+		var eulerAngle = new CANNON.Vec3();
+		this.body.shapeOrientations[0].toEuler(eulerAngle, "YZX");
+		var YAW = eulerAngle.z;
+		// Z seems to be YAW, in RADIANS
+		var y_power = Math.cos(YAW);
+		var x_power = Math.sin(YAW);
+
+		if(controls.jump)
+			this.body.velocity.z = 5;
+		if(controls.move_forward > controls.move_backward)
+		{
+			this.body.velocity.x = 5 * x_power;
+			this.body.velocity.y = 5 * y_power;
+		}
+		else if(controls.move_forward < controls.move_backward)
+		{
+			this.body.velocity.x = 5 * x_power;
+			this.body.velocity.y = 5 * y_power;
+		}/*
+		if(controls.move_left > controls.move_right)
+			this.body.velocity.y = 5 * y_power;
+		else if(controls.move_left < controls.move_right)
+			this.body.velocity.y = -5 * y_power;*/
+
+
+/*
+		if(controls.jump)
 			this.body.velocity.z = 5;
 		if(controls.move_forward)
 			this.body.velocity.x = 5;
 		else if(controls.move_backward)
-			this.body.velocity.x = -5;
+			this.body.velocity.x = -5;*/
 	}
 }

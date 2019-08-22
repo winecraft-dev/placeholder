@@ -11,6 +11,7 @@ module.exports = class GameObject
 			mass: mass,
 			material: material
 		});
+		this.body.quaternion.setFromEuler(0, 0, Math.Pi, "XYZ");
 	}
 
 	addTo(world)
@@ -40,9 +41,9 @@ module.exports = class GameObject
 			x_pos: this.body.position.x,
 			y_pos: this.body.position.z,
 			z_pos: this.body.position.y,
-			x_quat: -1 * this.body.quaternion.x,
-			y_quat: -1 * this.body.quaternion.z,
-			z_quat: -1 * this.body.quaternion.y,
+			x_quat: this.body.quaternion.x,
+			y_quat: this.body.quaternion.y,
+			z_quat: this.body.quaternion.z,
 			w_quat: this.body.quaternion.w
 		}
 	}
@@ -54,9 +55,9 @@ module.exports = class GameObject
 			x_pos: this.body.position.x,
 			y_pos: this.body.position.z,
 			z_pos: this.body.position.y,
-			x_quat: -1 * this.body.quaternion.x,
-			y_quat: -1 * this.body.quaternion.z,
-			z_quat: -1 * this.body.quaternion.y,
+			x_quat: this.body.quaternion.x,
+			y_quat: this.body.quaternion.y,
+			z_quat: this.body.quaternion.z,
 			w_quat: this.body.quaternion.w
 		}
 	}

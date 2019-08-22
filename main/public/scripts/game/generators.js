@@ -35,15 +35,15 @@ function removeObject(id)
 	}
 }
 
-function Terrain(id, object)
+function Terrain(id, initobject)
 {
-	this.update = function(object) {
-		this.mesh.position.set(object.x_pos, object.y_pos, object.z_pos);
+	this.update = function(updateobject) {
+		this.mesh.position.set(updateobject.x_pos, updateobject.y_pos, updateobject.z_pos);
 		this.mesh.quaternion.copy({
-			x: object.x_quat,
-			y: object.y_quat,
-			z: object.z_quat,
-			w: object.w_quat
+			x: updateobject.x_quat,
+			y: updateobject.y_quat,
+			z: updateobject.z_quat,
+			w: updateobject.w_quat
 		});
 	};
 
@@ -79,11 +79,11 @@ function Terrain(id, object)
 	var three_vertices = [];
 	var three_faces = [];
 
-	for(var vertex of object.vertices)
+	for(var vertex of initobject.vertices)
 	{
 		three_vertices.push(new THREE.Vector3(vertex.x, vertex.y, vertex.z));
 	}
-	for(var face of object.faces)
+	for(var face of initobject.faces)
 	{
 		three_faces.push(new THREE.Face3(face.a, face.b, face.c));
 		this.colorFace(three_faces[three_faces.length - 1], face.biome);
@@ -101,35 +101,41 @@ function Terrain(id, object)
 	this.mesh = new THREE.Mesh(this.geometry, this.material);
 	this.mesh.receiveShadow = true;
 	this.mesh.castShadow = true;
-	this.update(object);
+	this.update(initobject);
 
 	global_scene.add(this.mesh); // adds the mesh to the global scene	
 }
 
-function Player(id, self, object)
+function Player(id, self, initobject)
 {
-	this.update = function(object) {
+	this.update = function(updateobject) {
 		if(!this.self)
 		{
 			this.head.mesh.quaternion.copy({
-				x: object.x_facing,
-				y: object.y_facing,
-				z: object.z_facing,
-				w: object.w_facing
+				x: updateobject.x_facing,
+				y: updateobject.y_facing,
+				z: updateobject.z_facing,
+				w: updateobject.w_facing
 			});
 		}
+		this.body.mesh.quaternion.copy({
+			x: updateobject.x_quat,
+			y: updateobject.y_quat,
+			z: updateobject.z_quat,
+			w: updateobject.w_quat
+		});
 		// later this position will need to be interpolated, not just straight up set
-		this.head.mesh.position.set(object.x_pos + this.head.offset.x, 
-			object.y_pos + this.head.offset.y, 
-			object.z_pos + this.head.offset.z
+		this.head.mesh.position.set(updateobject.x_pos + this.head.offset.x, 
+			updateobject.y_pos + this.head.offset.y, 
+			updateobject.z_pos + this.head.offset.z
 		);
-		this.body.mesh.position.set(object.x_pos, 
-			object.y_pos, 
-			object.z_pos
+		this.body.mesh.position.set(updateobject.x_pos, 
+			updateobject.y_pos, 
+			updateobject.z_pos
 		);
-		this.feet.mesh.position.set(object.x_pos + this.feet.offset.x, 
-			object.y_pos + this.feet.offset.y, 
-			object.z_pos + this.feet.offset.z
+		this.feet.mesh.position.set(updateobject.x_pos + this.feet.offset.x, 
+			updateobject.y_pos + this.feet.offset.y, 
+			updateobject.z_pos + this.feet.offset.z
 		);
 	};
 
@@ -152,7 +158,7 @@ function Player(id, self, object)
 	};
 
 	// function called by inputManager to update the rotation of the self player
-	this.updateRotation = function(x, y) {
+	this.updateInputs = function(x, y) {
 		var x_rot = this.head.mesh.rotation.x + (y * selfRotationSpeed * -1);
 		var y_rot = this.head.mesh.rotation.y + (x * selfRotationSpeed * -1);
 		var z_rot = 0;
@@ -168,10 +174,8 @@ function Player(id, self, object)
 
 	// actual construction of the player object:
 	this.id = id;
-	this.username = object.username;
+	this.username = initobject.username;
 	this.self = self;
-
-	this.position = new THREE.Vector3(0, 0, 0); // default here
 
 	this.material = new THREE.MeshStandardMaterial({
 		roughness: .9,
@@ -180,34 +184,34 @@ function Player(id, self, object)
 	});
 
 	this.head = {
-		geometry: new THREE.BoxGeometry(object.head_diameter, 
-			object.head_diameter, 
-			object.head_diameter
+		geometry: new THREE.BoxGeometry(initobject.head_diameter, 
+			initobject.head_diameter, 
+			initobject.head_diameter
 		),
-		offset: new THREE.Vector3(object.head_offset.x,
-			object.head_offset.y,
-			object.head_offset.z
+		offset: new THREE.Vector3(initobject.head_offset.x,
+			initobject.head_offset.y,
+			initobject.head_offset.z
 		)
 	};
 	this.body = {
-		geometry: new THREE.CylinderGeometry(object.body_radius, 
-			object.body_radius, 
-			object.body_height, 
-			object.body_numSegments
+		geometry: new THREE.CylinderGeometry(initobject.body_radius, 
+			initobject.body_radius, 
+			initobject.body_height, 
+			initobject.body_numSegments
 		),
-		offset: new THREE.Vector3(object.body_offset.x,
-			object.body_offset.y,
-			object.body_offset.z
+		offset: new THREE.Vector3(initobject.body_offset.x,
+			initobject.body_offset.y,
+			initobject.body_offset.z
 		)
 	};
 	this.feet = {
-		geometry: new THREE.SphereGeometry(object.body_radius, 
-			object.body_numSegments, 
-			object.body_numSegments
+		geometry: new THREE.SphereGeometry(initobject.body_radius, 
+			initobject.body_numSegments, 
+			initobject.body_numSegments
 		),
-		offset: new THREE.Vector3(object.feet_offset.x,
-			object.feet_offset.y,
-			object.feet_offset.z
+		offset: new THREE.Vector3(initobject.feet_offset.x,
+			initobject.feet_offset.y,
+			initobject.feet_offset.z
 		)
 	};
 	this.head.mesh = new THREE.Mesh(this.head.geometry, this.material);
@@ -220,7 +224,7 @@ function Player(id, self, object)
 	this.feet.mesh.receiveShadow = true;
 	this.feet.mesh.castShadow = true;
 
-	this.update(object); //
+	this.update(initobject); //
 
 	if(!this.self)
 	{
@@ -256,16 +260,10 @@ function getSelfQuaternion()
 	return null;
 }
 
-function updateSelfPosition()
-{
-	// TO DO
-}
-
-function updateSelfRotation(x, y)
+function updateSelfInputs(movement, actions)
 {
 	if(selfID != null)
 	{
-		objectList.get(selfID).updateRotation(x, y);
+		objectList.get(selfID).updateInputs(movement.x, movement.y);
 	}
-	return null;
 }
