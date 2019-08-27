@@ -11,7 +11,6 @@ module.exports = class GameObject
 			mass: mass,
 			material: material
 		});
-		this.body.quaternion.setFromEuler(0, 0, Math.Pi, "XYZ");
 	}
 
 	addTo(world)
@@ -26,25 +25,29 @@ module.exports = class GameObject
 
 	updatePosition(x_pos, y_pos, z_pos)
 	{
-		this.body.position = new CANNON.Vec3(x_pos, y_pos, z_pos);
+		this.body.position.set(x_pos, y_pos, z_pos);
 	}
 
-	updateQuaternion(x_quat, y_quat, z_quat, w_quat)
+	updateAngle(x_quat, y_quat, z_quat, w_quat)
 	{
-		this.body.quaternion = new CANNON.Quaternion(x_quat, y_quat, z_quat, w_quat);
+		this.body.quaternion.set(x_quat, y_quat, z_quat, w_quat);
 	}
 
 	downloadInitial() 
 	{
 		return {
 			id: this.id,
-			x_pos: this.body.position.x,
-			y_pos: this.body.position.z,
-			z_pos: this.body.position.y,
-			x_quat: this.body.quaternion.x,
-			y_quat: this.body.quaternion.y,
-			z_quat: this.body.quaternion.z,
-			w_quat: this.body.quaternion.w
+			position: {
+				x: this.body.position.x,
+				y: this.body.position.z,
+				z: this.body.position.y
+			},
+			quaternion: {
+				x: this.body.quaternion.x,
+				y: this.body.quaternion.z,
+				z: this.body.quaternion.y,
+				w: this.body.quaternion.w
+			}
 		}
 	}
 
@@ -52,13 +55,17 @@ module.exports = class GameObject
 	{
 		return {
 			id: this.id,
-			x_pos: this.body.position.x,
-			y_pos: this.body.position.z,
-			z_pos: this.body.position.y,
-			x_quat: this.body.quaternion.x,
-			y_quat: this.body.quaternion.y,
-			z_quat: this.body.quaternion.z,
-			w_quat: this.body.quaternion.w
+			position: {
+				x: this.body.position.x,
+				y: this.body.position.z,
+				z: this.body.position.y
+			},
+			quaternion: {
+				x: this.body.quaternion.x,
+				y: this.body.quaternion.z,
+				z: this.body.quaternion.y,
+				w: this.body.quaternion.w
+			}
 		}
 	}
 }

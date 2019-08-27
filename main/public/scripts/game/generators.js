@@ -38,13 +38,8 @@ function removeObject(id)
 function Terrain(id, initobject)
 {
 	this.update = function(updateobject) {
-		this.mesh.position.set(updateobject.x_pos, updateobject.y_pos, updateobject.z_pos);
-		this.mesh.quaternion.copy({
-			x: updateobject.x_quat,
-			y: updateobject.y_quat,
-			z: updateobject.z_quat,
-			w: updateobject.w_quat
-		});
+		this.mesh.position.set(updateobject.position.x, updateobject.position.y, updateobject.position.z);
+		this.mesh.quaternion.set(updateobject.quaternion.x, updateobject.quaternion.y, updateobject.quaternion.z, updateobject.quaternion.w);
 	};
 
 	this.remove = function() {
@@ -111,31 +106,22 @@ function Player(id, self, initobject)
 	this.update = function(updateobject) {
 		if(!this.self)
 		{
-			this.head.mesh.quaternion.copy({
-				x: updateobject.x_facing,
-				y: updateobject.y_facing,
-				z: updateobject.z_facing,
-				w: updateobject.w_facing
-			});
+			console.log(updateobject);
+			this.head.mesh.quaternion.set(updateobject.facing.x, updateobject.facing.y, updateobject.facing.z, updateobject.facing.w);
 		}
-		this.body.mesh.quaternion.copy({
-			x: updateobject.x_quat,
-			y: updateobject.y_quat,
-			z: updateobject.z_quat,
-			w: updateobject.w_quat
-		});
+		this.body.mesh.quaternion.set(updateobject.quaternion.x, updateobject.quaternion.y, updateobject.quaternion.z, updateobject.quaternion.w);
 		// later this position will need to be interpolated, not just straight up set
-		this.head.mesh.position.set(updateobject.x_pos + this.head.offset.x, 
-			updateobject.y_pos + this.head.offset.y, 
-			updateobject.z_pos + this.head.offset.z
+		this.head.mesh.position.set(updateobject.position.x + this.head.offset.x, 
+			updateobject.position.y + this.head.offset.y, 
+			updateobject.position.z + this.head.offset.z
 		);
-		this.body.mesh.position.set(updateobject.x_pos, 
-			updateobject.y_pos, 
-			updateobject.z_pos
+		this.body.mesh.position.set(updateobject.position.x, 
+			updateobject.position.y, 
+			updateobject.position.z
 		);
-		this.feet.mesh.position.set(updateobject.x_pos + this.feet.offset.x, 
-			updateobject.y_pos + this.feet.offset.y, 
-			updateobject.z_pos + this.feet.offset.z
+		this.feet.mesh.position.set(updateobject.position.x + this.feet.offset.x, 
+			updateobject.position.y + this.feet.offset.y, 
+			updateobject.position.z + this.feet.offset.z
 		);
 	};
 
@@ -146,7 +132,7 @@ function Player(id, self, initobject)
 	};
 
 	this.getPosition = function() {
-		return this.head.mesh.position;
+		return this.body.mesh.position;
 	};
 
 	this.getRotation = function() {

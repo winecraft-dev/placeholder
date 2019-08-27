@@ -14,8 +14,8 @@ module.exports = class GamePlayer extends GameObject
 		this.team = 0;
 
 		// head construction
-		this.head_diameter = 1;
-		this.headShape = new CANNON.Box(new CANNON.Vec3(this.head_diameter, this.head_diameter, this.head_diameter));
+		this.head_radius = .5;
+		this.headShape = new CANNON.Box(new CANNON.Vec3(this.head_radius, this.head_radius, this.head_radius));
 		
 		// body construction
 		this.body_radius = 1;
@@ -26,7 +26,7 @@ module.exports = class GamePlayer extends GameObject
 		// feet construction
 		this.feetShape = new CANNON.Sphere(this.body_radius);
 
-		this.headOffset = new CANNON.Vec3(0, 0, this.body_height / 2 + this.head_diameter / 2);
+		this.headOffset = new CANNON.Vec3(0, 0, this.body_height / 2 + this.head_radius);
 		this.bodyOffset = new CANNON.Vec3(0, 0, 0);
 		this.feetOffset = new CANNON.Vec3(0, 0, this.body_height / -2);
 
@@ -35,6 +35,8 @@ module.exports = class GamePlayer extends GameObject
 		this.body.addShape(this.feetShape, this.feetOffset);
 		this.body.fixedRotation = true;
 		this.body.updateMassProperties();
+
+		this.headOrientation = this.body.shapeOrientations[0];
 	}
 
 	setTeam(team)
@@ -45,9 +47,9 @@ module.exports = class GamePlayer extends GameObject
 	downloadInitial()
 	{
 		var base = super.downloadInitial();
-
+		
 		base.username = this.username;
-		base.head_diameter = this.head_diameter;
+		base.head_diameter = this.head_radius * 2;
 		base.body_radius = this.body_radius;
 		base.body_height = this.body_height;
 		base.body_numSegments = this.body_numSegments;
@@ -66,6 +68,12 @@ module.exports = class GamePlayer extends GameObject
 			y: this.feetOffset.z,
 			z: this.feetOffset.y
 		};
+		base.facing = {
+			x: this.headOrientation.x,
+			y: this.headOrientation.z,
+			z: this.headOrientation.y,
+			w: this.headOrientation.w
+		};
 		
 		return base;
 	}
@@ -74,10 +82,12 @@ module.exports = class GamePlayer extends GameObject
 	{
 		var base = super.downloadUpdates();
 
-		base.x_facing = -1 * this.body.shapeOrientations[0].x;
-		base.y_facing = -1 * this.body.shapeOrientations[0].z;
-		base.z_facing = -1 * this.body.shapeOrientations[0].y;
-		base.w_facing = this.body.shapeOrientations[0].w;
+		base.facing = {
+			x: this.headOrientation.x,
+			y: this.headOrientation.z,
+			z: this.headOrientation.y,
+			w: this.headOrientation.w
+		};
 
 		return base;
 	}
@@ -96,39 +106,8 @@ module.exports = class GamePlayer extends GameObject
 	updateControls(controls, quaternion)
 	{
 		// index 0 is the head
-		this.body.shapeOrientations[0].copy(new CANNON.Quaternion(-1 * quaternion.x, -1 * quaternion.z, -1 * quaternion.y, quaternion.w));
-
-		var eulerAngle = new CANNON.Vec3();
-		this.body.shapeOrientations[0].toEuler(eulerAngle, "YZX");
-		var YAW = eulerAngle.z;
-		// Z seems to be YAW, in RADIANS
-		var y_power = Math.cos(YAW);
-		var x_power = Math.sin(YAW);
-
-		if(controls.jump)
-			this.body.velocity.z = 5;
-		if(controls.move_forward > controls.move_backward)
-		{
-			this.body.velocity.x = 5 * x_power;
-			this.body.velocity.y = 5 * y_power;
-		}
-		else if(controls.move_forward < controls.move_backward)
-		{
-			this.body.velocity.x = 5 * x_power;
-			this.body.velocity.y = 5 * y_power;
-		}/*
-		if(controls.move_left > controls.move_right)
-			this.body.velocity.y = 5 * y_power;
-		else if(controls.move_left < controls.move_right)
-			this.body.velocity.y = -5 * y_power;*/
-
-
-/*
-		if(controls.jump)
-			this.body.velocity.z = 5;
-		if(controls.move_forward)
-			this.body.velocity.x = 5;
-		else if(controls.move_backward)
-			this.body.velocity.x = -5;*/
+		console.log(quaternion);
+		this.headOrientation.set(quaternion.x, quaternion.z, quaternion.y, quaternion.w);
+		super.updateAngle(quaternion.x, quaternion.z, quaternion.y, quaternion.w);
 	}
 }
