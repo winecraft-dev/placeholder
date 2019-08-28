@@ -40,7 +40,6 @@ function Inputs(/* might have a way to get keys->action binds*/)
 			}
 			else if(up == false)
 			{
-				this.downKeys --;
 				this.actions[keyToAction.get(key)] = 0;
 			}
 		}
@@ -77,7 +76,6 @@ function Inputs(/* might have a way to get keys->action binds*/)
 	}
 
 	window.addEventListener('keydown', function(e) {
-
 		self.actionUpdate(e.which, true);
 	}, false);
 	window.addEventListener('keyup', function(e) {

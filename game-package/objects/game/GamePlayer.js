@@ -37,6 +37,10 @@ module.exports = class GamePlayer extends GameObject
 		this.body.updateMassProperties();
 
 		this.headOrientation = this.body.shapeOrientations[0];
+
+		// attributes
+		this.movement_speed = 5;
+		this.jump_speed = 5;
 	}
 
 	setTeam(team)
@@ -105,9 +109,57 @@ module.exports = class GamePlayer extends GameObject
 	}; */
 	updateControls(controls, quaternion)
 	{
-		// index 0 is the head
-		console.log(quaternion);
 		this.headOrientation.set(quaternion.x, quaternion.z, quaternion.y, quaternion.w);
-		super.updateAngle(quaternion.x, quaternion.z, quaternion.y, quaternion.w);
+
+		// calculate yaw
+		var siny_cosp = 2.0 * this.headOrientation.z * this.headOrientation.w - 2.0 * this.headOrientation.x * this.headOrientation.y;
+		var cosy_cosp = 1.0 - 2.0 * this.headOrientation.z * this.headOrientation.z - 2.0 * this.headOrientation.y + this.headOrientation.y;
+
+		var yaw = Math.atan2(siny_cosp, cosy_cosp);
+
+		var velocity_x = 0;
+		var velocity_y = 0;
+
+		if(controls.move_forward > controls.move_backward)
+		{
+			var x_component = -1 * this.movement_speed * Math.sin(yaw);
+			var y_component = -1 * this.movement_speed * Math.cos(yaw);
+
+			velocity_x += x_component;
+			velocity_y += y_component;
+		}
+		else if(controls.move_forward < controls.move_backward)
+		{
+			var x_component = this.movement_speed * Math.sin(yaw);
+			var y_component = this.movement_speed * Math.cos(yaw);
+
+			velocity_x += x_component;
+			velocity_y += y_component;
+		}
+
+		if(controls.move_left > controls.move_right)
+		{
+			var x_component = -1 * this.movement_speed * Math.sin(yaw + Math.PI / 2);
+			var y_component = -1 * this.movement_speed * Math.cos(yaw + Math.PI / 2);
+
+			velocity_x += x_component;
+			velocity_y += y_component;
+		}
+		else if(controls.move_left < controls.move_right)
+		{
+			var x_component = this.movement_speed * Math.sin(yaw + Math.PI / 2);
+			var y_component = this.movement_speed * Math.cos(yaw + Math.PI / 2);
+
+			velocity_x += x_component;
+			velocity_y += y_component;
+		}
+
+		if(controls.jump)
+		{
+			this.body.velocity.z = this.jump_speed;
+		}
+
+		this.body.velocity.x = velocity_x != 0 ? velocity_x : this.body.velocity.x;
+		this.body.velocity.y = velocity_y != 0 ? velocity_y : this.body.velocity.y;
 	}
 }
