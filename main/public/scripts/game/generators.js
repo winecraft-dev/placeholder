@@ -106,7 +106,9 @@ function Player(id, self, initobject)
 	this.update = function(updateobject) {
 		let objectFacingQuaternion = new THREE.Quaternion(updateobject.facing.x, updateobject.facing.y, updateobject.facing.z, updateobject.facing.w);
 		let objectFacingEuler = new THREE.Euler();
-		objectFacingEuler.setFromQuaternion(objectFacingQuaternion,"XYZ");
+		objectFacingEuler.setFromQuaternion(objectFacingQuaternion,"YXZ");
+		//objectFacingEuler.y += Math.PI;
+		objectFacingEuler.x *= 1;
 
 		if(!this.self)
 		{
@@ -129,10 +131,8 @@ function Player(id, self, initobject)
 		);
 
 		this.model3D.position.set(updateobject.position.x,updateobject.position.y,updateobject.position.z);
-		this.model3D.getObjectByName("Head").rotation.set(objectFacingEuler.x,objectFacingEuler.y,objectFacingEuler.z);
-		this.model3D.getObjectByName("Legs").rotation.set(0,objectFacingEuler.y,objectFacingEuler.z);
-		this.model3D.getObjectByName("Body").rotation.set(0,objectFacingEuler.y,objectFacingEuler.z);
-
+		this.model3D.rotation.set(0,objectFacingEuler.y,0);
+		this.model3D.getObjectByName("Head").rotation.set(objectFacingEuler.x,Math.PI,0);
 	};
 
 	this.remove = function() {
