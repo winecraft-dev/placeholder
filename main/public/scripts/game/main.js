@@ -4,6 +4,7 @@ global_renderer = null;
 global_connection = null;
 global_inputs = null;
 global_camera = null;
+global_models = null;
 
 $(document).ready(function() {
 	//create global_scene and set props
@@ -52,6 +53,11 @@ $(document).ready(function() {
 		global_renderer.setSize(window.innerWidth,window.innerHeight);
 		global_camera.updateAspect(window.innerWidth, window.innerHeight);
 	});
+
+	global_models = new modelLoader();
+
+	//need a way to preload in all important 3d models.
+	global_models.preload("/models3D/bigHeadPerson.glb","bigHead");
 
 	//set update loop for all classes
 	function animate() {

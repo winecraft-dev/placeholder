@@ -37,7 +37,7 @@ function createSunLight(scene,intens,time)
 
 	//debug helper
 	var helper = new THREE.CameraHelper(light.shadow.camera);
-	scene.add(helper);
+	//scene.add(helper);
 
 	let timeCycle = 0;
 

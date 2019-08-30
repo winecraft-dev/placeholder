@@ -98,37 +98,48 @@ function Terrain(id, initobject)
 	this.mesh.castShadow = true;
 	this.update(initobject);
 
-	global_scene.add(this.mesh); // adds the mesh to the global scene	
+	global_scene.add(this.mesh); // adds the mesh to the global scene
 }
 
 function Player(id, self, initobject)
 {
 	this.update = function(updateobject) {
+		let objectFacingQuaternion = new THREE.Quaternion(updateobject.facing.x, updateobject.facing.y, updateobject.facing.z, updateobject.facing.w);
+		let objectFacingEuler = new THREE.Euler();
+		objectFacingEuler.setFromQuaternion(objectFacingQuaternion,"XYZ");
+
 		if(!this.self)
 		{
-			console.log(updateobject);
+			//console.log(updateobject);
 			this.head.mesh.quaternion.set(updateobject.facing.x, updateobject.facing.y, updateobject.facing.z, updateobject.facing.w);
 		}
 		this.body.mesh.quaternion.set(updateobject.quaternion.x, updateobject.quaternion.y, updateobject.quaternion.z, updateobject.quaternion.w);
 		// later this position will need to be interpolated, not just straight up set
-		this.head.mesh.position.set(updateobject.position.x + this.head.offset.x, 
-			updateobject.position.y + this.head.offset.y, 
+		this.head.mesh.position.set(updateobject.position.x + this.head.offset.x,
+			updateobject.position.y + this.head.offset.y,
 			updateobject.position.z + this.head.offset.z
 		);
-		this.body.mesh.position.set(updateobject.position.x, 
-			updateobject.position.y, 
+		this.body.mesh.position.set(updateobject.position.x,
+			updateobject.position.y,
 			updateobject.position.z
 		);
-		this.feet.mesh.position.set(updateobject.position.x + this.feet.offset.x, 
-			updateobject.position.y + this.feet.offset.y, 
+		this.feet.mesh.position.set(updateobject.position.x + this.feet.offset.x,
+			updateobject.position.y + this.feet.offset.y,
 			updateobject.position.z + this.feet.offset.z
 		);
+
+		this.model3D.position.set(updateobject.position.x,updateobject.position.y,updateobject.position.z);
+		this.model3D.getObjectByName("Head").rotation.set(objectFacingEuler.x,objectFacingEuler.y,objectFacingEuler.z);
+		this.model3D.getObjectByName("Legs").rotation.set(0,objectFacingEuler.y,objectFacingEuler.z);
+		this.model3D.getObjectByName("Body").rotation.set(0,objectFacingEuler.y,objectFacingEuler.z);
+
 	};
 
 	this.remove = function() {
 		global_scene.remove(this.head.mesh);
 		global_scene.remove(this.body.mesh);
 		global_scene.remove(this.feet.mesh);
+		global_scene.remove(this.model3D);
 	};
 
 	this.getPosition = function() {
@@ -170,8 +181,8 @@ function Player(id, self, initobject)
 	});
 
 	this.head = {
-		geometry: new THREE.BoxGeometry(initobject.head_diameter, 
-			initobject.head_diameter, 
+		geometry: new THREE.BoxGeometry(initobject.head_diameter,
+			initobject.head_diameter,
 			initobject.head_diameter
 		),
 		offset: new THREE.Vector3(initobject.head_offset.x,
@@ -180,9 +191,9 @@ function Player(id, self, initobject)
 		)
 	};
 	this.body = {
-		geometry: new THREE.CylinderGeometry(initobject.body_radius, 
-			initobject.body_radius, 
-			initobject.body_height, 
+		geometry: new THREE.CylinderGeometry(initobject.body_radius,
+			initobject.body_radius,
+			initobject.body_height,
 			initobject.body_numSegments
 		),
 		offset: new THREE.Vector3(initobject.body_offset.x,
@@ -191,8 +202,8 @@ function Player(id, self, initobject)
 		)
 	};
 	this.feet = {
-		geometry: new THREE.SphereGeometry(initobject.body_radius, 
-			initobject.body_numSegments, 
+		geometry: new THREE.SphereGeometry(initobject.body_radius,
+			initobject.body_numSegments,
 			initobject.body_numSegments
 		),
 		offset: new THREE.Vector3(initobject.feet_offset.x,
@@ -210,13 +221,20 @@ function Player(id, self, initobject)
 	this.feet.mesh.receiveShadow = true;
 	this.feet.mesh.castShadow = true;
 
+	this.model3D = global_models.getModel("bigHead").clone();
+	for(let obj of this.model3D.children)
+	{
+		obj.material = this.material;
+	}
+	console.log(this.model3D);
 	this.update(initobject); //
 
 	if(!this.self)
 	{
-		global_scene.add(this.head.mesh);
-		global_scene.add(this.body.mesh);
-		global_scene.add(this.feet.mesh);
+		//global_scene.add(this.head.mesh);
+		//global_scene.add(this.body.mesh);
+		//global_scene.add(this.feet.mesh);
+		global_scene.add(this.model3D);
 	}
 }
 
