@@ -84,7 +84,7 @@ module.exports = class Game
 		// creates the world
 		this.world = new CANNON.World();
 		this.world.gravity.set(0, 0, -10);
-		this.world.broadphase = new CANNON.NaiveBroadphase();
+		this.world.broadphase = new CANNON.SAPBroadphase(this.world);
 		MaterialIndex.addContactMaterials(this.world);
 
 		// passes a Terrain to the addObject function (declared below)
@@ -140,7 +140,7 @@ module.exports = class Game
 					});
 				}
 			}
-		}, fixedTimeStep * 1000);	
+		}, fixedTimeStep * 1000);
 	}
 
 	// function that consolidates all of the trouble of adding objects to the game
@@ -222,6 +222,23 @@ module.exports = class Game
 		}
 	}
 
+	// adds player to the player map
+	addPlayer(token, player)
+	{
+		Logger.blue("Player \"" + player.username + "\" added to Game " + this.id);
+
+		this.playerTokens.set(token, player.id);
+		this.addObject(player);
+
+		// just set it to an arbirtary position
+		player.updatePosition(Math.random() * 20 + 5, Math.random() * 20 + 5, 20);
+	}
+
+	hasPlayer(token)
+	{
+		return this.playerTokens.has(token);
+	}
+
 	// takes all user input stuff
 	handleMessage(token, receiver, message)
 	{
@@ -242,23 +259,6 @@ module.exports = class Game
 			default:
 				break;
 		}
-	}
-
-	// adds player to the player map
-	addPlayer(token, player)
-	{
-		Logger.blue("Player \"" + player.username + "\" added to Game " + this.id);
-
-		this.playerTokens.set(token, player.id);
-		this.addObject(player);
-
-		// just set it to an arbirtary position
-		player.updatePosition(Math.random() * 20 + 5, Math.random() * 20 + 5, 20);
-	}
-
-	hasPlayer(token)
-	{
-		return this.playerTokens.has(token);
 	}
 
 	removePlayer(token)
