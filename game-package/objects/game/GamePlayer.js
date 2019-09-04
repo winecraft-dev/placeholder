@@ -40,7 +40,7 @@ module.exports = class GamePlayer extends GameObject
 
 		// attributes
 		this.movement_speed = 5;
-		this.jump_speed = 5;
+		this.jump_speed = 8;
 	}
 
 	setTeam(team)
@@ -156,7 +156,10 @@ module.exports = class GamePlayer extends GameObject
 
 		if(controls.jump)
 		{
-			this.body.velocity.z = this.jump_speed;
+			if(super.checkContactWith('terrain') != null)
+			{
+				this.body.velocity.z = this.jump_speed;
+			}
 		}
 
 		this.body.velocity.x = velocity_x != 0 ? velocity_x : this.body.velocity.x;

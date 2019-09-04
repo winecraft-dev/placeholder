@@ -11,10 +11,9 @@ module.exports = class GameObject
 			mass: mass,
 			material: material
 		});
-
 		this.body.id = this.id;
 
-		this.contacts = new Set();
+		this.contacts = new Map();
 	}
 
 	addTo(world)
@@ -39,12 +38,22 @@ module.exports = class GameObject
 
 	beginContact(other)
 	{
-		console.log(this.id, 'beginContact');
+		this.contacts.set(other.id, other);
 	}
 
 	endContact(other)
 	{
-		console.log(this.id, 'endContact');
+		this.contacts.delete(other.id);
+	}
+
+	checkContactWith(type)
+	{
+		for(var [object_id, gameObject] of this.contacts)
+		{
+			if(gameObject.type == type)
+				return gameObject;
+		}
+		return null;
 	}
 
 	downloadInitial() 
