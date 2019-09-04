@@ -101,6 +101,9 @@ module.exports = class Game
 		this.id_sendLoop = null;
 		this.gameLoop();
 		this.sendLoop();
+
+		// to deal with contacts
+		this.currentContacts = new Set();
 	}
 
 	gameLoop()
@@ -113,6 +116,7 @@ module.exports = class Game
 		this.id_gameLoop = setInterval(function() {
 			// steps the world 1/30 sec.
 			self.world.step(fixedTimeStep, fixedTimeStep, maxSubSteps);
+			self.handleContacts();
 		}, fixedTimeStep * 1000);
 	}
 
@@ -141,6 +145,36 @@ module.exports = class Game
 				}
 			}
 		}, fixedTimeStep * 1000);	
+	}
+
+	handleContacts()
+	{
+		var oldContacts = new Set(this.currentContacts);
+
+		for(var contact of this.world.contacts)
+		{
+			oldContacts.delete(([contact.bi.id, contact.bj.id]).toString());
+			oldContacts.delete(([contact.bj.id, contact.bi.id]).toString());
+
+			if(!this.currentContacts.has(([contact.bi.id, contact.bj.id]).toString())
+				&& !this.currentContacts.has(([contact.bj.id, contact.bi.id]).toString()))
+			{
+				this.currentContacts.add(([contact.bi.id, contact.bj.id]).toString());
+
+				this.gameObjects.get(contact.bi.id).beginContact(this.gameObjects.get(contact.bj.id));
+				this.gameObjects.get(contact.bj.id).beginContact(this.gameObjects.get(contact.bi.id));
+			}
+		}
+
+		for(var pairText of oldContacts)
+		{
+			this.currentContacts.delete(pairText);
+			var pair = pairText.split(',');
+
+			this.gameObjects.get(parseInt(pair[0])).endContact(this.gameObjects.get(parseInt(pair[1])));
+			this.gameObjects.get(parseInt(pair[1])).endContact(this.gameObjects.get(parseInt(pair[0])));
+		}
+		//console.log(this.currentContacts);
 	}
 
 	// function that consolidates all of the trouble of adding objects to the game

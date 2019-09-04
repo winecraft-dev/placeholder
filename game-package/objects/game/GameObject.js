@@ -11,6 +11,10 @@ module.exports = class GameObject
 			mass: mass,
 			material: material
 		});
+
+		this.body.id = this.id;
+
+		this.contacts = new Set();
 	}
 
 	addTo(world)
@@ -31,6 +35,16 @@ module.exports = class GameObject
 	updateAngle(x_quat, y_quat, z_quat, w_quat)
 	{
 		this.body.quaternion.set(x_quat, y_quat, z_quat, w_quat);
+	}
+
+	beginContact(other)
+	{
+		console.log(this.id, 'beginContact');
+	}
+
+	endContact(other)
+	{
+		console.log(this.id, 'endContact');
 	}
 
 	downloadInitial() 
