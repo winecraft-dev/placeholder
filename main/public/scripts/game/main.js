@@ -65,7 +65,7 @@ $(document).ready(function() {
 		if(getSelfPosition() != null)
 		{
 			updateSelfInputs(global_inputs.getMovement(), global_inputs.actions);
-			global_camera.updatePosition(getSelfPosition());
+			global_camera.updatePosition(getSelfHeadPosition());
 			global_camera.updateRotation(getSelfRotation());
 		}
 		sun.Update();

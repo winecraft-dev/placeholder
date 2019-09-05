@@ -14,12 +14,12 @@ module.exports = class GamePlayer extends GameObject
 		this.team = 0;
 
 		// head construction
-		this.head_radius = .5;
+		this.head_radius = .75;
 		this.headShape = new CANNON.Box(new CANNON.Vec3(this.head_radius, this.head_radius, this.head_radius));
 		
 		// body construction
-		this.body_radius = 1;
-		this.body_height = 3;
+		this.body_radius = .55;
+		this.body_height = 2;
 		this.body_numSegments = 20;
 		this.bodyShape = new CANNON.Cylinder(this.body_radius, this.body_radius, this.body_height, this.body_numSegments);
 

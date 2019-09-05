@@ -161,8 +161,11 @@ module.exports = class Game
 			{
 				this.currentContacts.add(([contact.bi.id, contact.bj.id]).toString());
 
-				this.gameObjects.get(contact.bi.id).beginContact(this.gameObjects.get(contact.bj.id));
-				this.gameObjects.get(contact.bj.id).beginContact(this.gameObjects.get(contact.bi.id));
+				if(this.gameObjects.has(contact.bi.id) && this.gameObjects.has(contact.bj.id))
+				{
+					this.gameObjects.get(contact.bi.id).beginContact(this.gameObjects.get(contact.bj.id));
+					this.gameObjects.get(contact.bj.id).beginContact(this.gameObjects.get(contact.bi.id));
+				}
 			}
 		}
 
@@ -171,8 +174,14 @@ module.exports = class Game
 			this.currentContacts.delete(pairText);
 			var pair = pairText.split(',');
 
-			this.gameObjects.get(parseInt(pair[0])).endContact(this.gameObjects.get(parseInt(pair[1])));
-			this.gameObjects.get(parseInt(pair[1])).endContact(this.gameObjects.get(parseInt(pair[0])));
+			var id1 = parseInt(pair[0]);
+			var id2 = parseInt(pair[1]);
+
+			if(this.gameObjects.has(id1) && this.gameObjects.has(id2))
+			{
+				this.gameObjects.get(id1).endContact(this.gameObjects.get(id2));
+				this.gameObjects.get(id2).endContact(this.gameObjects.get(id1));
+			}
 		}
 		//console.log(this.currentContacts);
 	}

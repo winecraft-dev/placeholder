@@ -104,12 +104,6 @@ function Terrain(id, initobject)
 function Player(id, self, initobject)
 {
 	this.update = function(updateobject) {
-		let objectFacingQuaternion = new THREE.Quaternion(updateobject.facing.x, updateobject.facing.y, updateobject.facing.z, updateobject.facing.w);
-		let objectFacingEuler = new THREE.Euler();
-		objectFacingEuler.setFromQuaternion(objectFacingQuaternion,"YXZ");
-		//objectFacingEuler.y += Math.PI;
-		objectFacingEuler.x *= 1;
-
 		if(!this.self)
 		{
 			//console.log(updateobject);
@@ -130,6 +124,12 @@ function Player(id, self, initobject)
 			updateobject.position.z + this.feet.offset.z
 		);
 
+		let objectFacingQuaternion = new THREE.Quaternion(updateobject.facing.x, updateobject.facing.y, updateobject.facing.z, updateobject.facing.w);
+		let objectFacingEuler = new THREE.Euler();
+		objectFacingEuler.setFromQuaternion(objectFacingQuaternion,"YXZ");
+		//objectFacingEuler.y += Math.PI;
+		objectFacingEuler.x *= 1;
+
 		this.model3D.position.set(updateobject.position.x,updateobject.position.y,updateobject.position.z);
 		this.model3D.rotation.set(0,objectFacingEuler.y,0);
 		this.model3D.getObjectByName("Head").rotation.set(objectFacingEuler.x,Math.PI,0);
@@ -140,6 +140,10 @@ function Player(id, self, initobject)
 		global_scene.remove(this.body.mesh);
 		global_scene.remove(this.feet.mesh);
 		global_scene.remove(this.model3D);
+	};
+
+	this.getHeadPosition = function() {
+		return this.head.mesh.position;
 	};
 
 	this.getPosition = function() {
@@ -173,6 +177,11 @@ function Player(id, self, initobject)
 	this.id = id;
 	this.username = initobject.username;
 	this.self = self;
+
+	this.wireframeMaterial = new THREE.MeshBasicMaterial({
+		color: new THREE.Color(0x000000),
+		wireframe: true
+	});
 
 	this.material = new THREE.MeshStandardMaterial({
 		roughness: .9,
@@ -211,13 +220,13 @@ function Player(id, self, initobject)
 			initobject.feet_offset.z
 		)
 	};
-	this.head.mesh = new THREE.Mesh(this.head.geometry, this.material);
+	this.head.mesh = new THREE.Mesh(this.head.geometry, this.wireframeMaterial);
 	this.head.mesh.receiveShadow = true;
 	this.head.mesh.castShadow = true;
-	this.body.mesh = new THREE.Mesh(this.body.geometry, this.material);
+	this.body.mesh = new THREE.Mesh(this.body.geometry, this.wireframeMaterial);
 	this.body.mesh.receiveShadow = true;
 	this.body.mesh.castShadow = true;
-	this.feet.mesh = new THREE.Mesh(this.feet.geometry, this.material);
+	this.feet.mesh = new THREE.Mesh(this.feet.geometry, this.wireframeMaterial);
 	this.feet.mesh.receiveShadow = true;
 	this.feet.mesh.castShadow = true;
 
@@ -231,10 +240,18 @@ function Player(id, self, initobject)
 
 	if(!this.self)
 	{
-		//global_scene.add(this.head.mesh);
-		//global_scene.add(this.body.mesh);
-		//global_scene.add(this.feet.mesh);
+		global_scene.add(this.head.mesh);
+		global_scene.add(this.body.mesh);
+		global_scene.add(this.feet.mesh);
 		global_scene.add(this.model3D);
+	}
+}
+
+function getSelfHeadPosition()
+{
+	if(selfID != null)
+	{
+		return objectList.get(selfID).getHeadPosition();
 	}
 }
 
