@@ -35,6 +35,7 @@ function Connection(ip, token)
 				addObject(data.object.id, data.type, data.self, data.object);
 				break;
 			case 'updateobject':
+			//console.log(data.object);
 				updateObject(data.object.id, data.type, data.object);
 				break;
 			case 'removeobject':
