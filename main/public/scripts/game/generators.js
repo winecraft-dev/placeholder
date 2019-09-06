@@ -104,6 +104,8 @@ function Terrain(id, initobject)
 function Player(id, self, initobject)
 {
 	this.update = function(updateobject) {
+		this.velocity.set(updateobject.velocity.x,updateobject.velocity.y,updateobject.velocity.z);
+		// boi this is some ugly ass code
 		if(!this.self)
 		{
 			//console.log(updateobject);
@@ -134,6 +136,12 @@ function Player(id, self, initobject)
 		this.model3D.rotation.set(0,objectFacingEuler.y,0);
 		this.model3D.getObjectByName("Head").rotation.set(objectFacingEuler.x,Math.PI,0);
 	};
+
+	this.updateVelocity = function()
+	{
+		this.velocity.add(new THREE.Vector3(0,-10,0));
+		this.model3D.position.add(new THREE.Vector3(this.velocity.x * global_time.getDelta,this.velocity.y * global_time.getDelta,this.velocity.z * global_time.getDelta));
+	}
 
 	this.remove = function() {
 		global_scene.remove(this.head.mesh);
@@ -182,6 +190,7 @@ function Player(id, self, initobject)
 		color: new THREE.Color(0x000000),
 		wireframe: true
 	});
+	this.velocity = new THREE.Vector3(0,0,0);
 
 	this.material = new THREE.MeshStandardMaterial({
 		roughness: .9,
@@ -235,7 +244,6 @@ function Player(id, self, initobject)
 	{
 		obj.material = this.material;
 	}
-	console.log(this.model3D);
 	this.update(initobject); //
 
 	if(!this.self)

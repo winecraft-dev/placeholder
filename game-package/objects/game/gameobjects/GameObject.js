@@ -15,8 +15,11 @@ module.exports = class GameObject
 			material: material
 		});
 		this.body.id = this.id;
+<<<<<<< HEAD:game-package/objects/game/gameobjects/GameObject.js
 
 		this.contacts = new Map();
+=======
+>>>>>>> gltfLoader:game-package/objects/game/GameObject.js
 	}
 
 	addTo(world)
@@ -85,6 +88,11 @@ module.exports = class GameObject
 				x: this.body.position.x,
 				y: this.body.position.z,
 				z: this.body.position.y
+			},
+			velocity: {
+				x: this.body.velocity.x,
+				y: this.body.velocity.z,
+				z: this.body.velocity.y
 			},
 			quaternion: {
 				x: this.body.quaternion.x,

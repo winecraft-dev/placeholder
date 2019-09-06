@@ -21,9 +21,11 @@ contactMaterials.add(new CANNON.ContactMaterial(materials.get('playerMaterial'),
 }));
 contactMaterials.add(new CANNON.ContactMaterial(materials.get('playerMaterial'), materials.get('playerMaterial'), {
 	friction: 0.4,
-	restitution: .9,
-	contactEquationStiffness: 1e6,
-	contactEquationRelaxation: 10
+	restitution: .4,
+	contactEquationStiffness: 1e8,
+	contactEquationRelaxation: 3,
+	frictionEquationStiffness: 1e8,
+	frictionEquationRegularizationTime: 3
 }));
 
 exports.getMaterial = function(name)

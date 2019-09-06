@@ -5,6 +5,7 @@ global_connection = null;
 global_inputs = null;
 global_camera = null;
 global_models = null;
+global_time = new THREE.Clock();
 
 $(document).ready(function() {
 	//create global_scene and set props
@@ -58,19 +59,29 @@ $(document).ready(function() {
 
 	//need a way to preload in all important 3d models.
 	global_models.preload("/models3D/bigHeadPerson.glb","bigHead");
-
 	//set update loop for all classes
 	function animate() {
 		requestAnimationFrame(animate);
+
 		if(getSelfPosition() != null)
 		{
 			updateSelfInputs(global_inputs.getMovement(), global_inputs.actions);
 			global_camera.updatePosition(getSelfHeadPosition());
 			global_camera.updateRotation(getSelfRotation());
 		}
+
 		sun.Update();
 		bgMesh.position.copy(global_camera.camera.position);
+
+		console.log(global_time.getDelta());
+		for(var object of objectList)
+		{
+			if(object.velocity != undefined)
+				object.updateVelocity();
+		}
+
 		global_renderer.render(global_scene, global_camera.camera);
+		global_time.start();
 	}
 	animate();
 

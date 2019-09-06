@@ -13,6 +13,20 @@ module.exports = class GamePlayer extends GameObject
 		this.username = username;
 		this.team = 0;
 
+		// attributes
+		this.movement_speed = 5;
+		this.jump_speed = 5;
+
+		this.createBody();
+	}
+
+	setTeam(team)
+	{
+		this.team = team;
+	}
+
+	createBody()
+	{		
 		// head construction
 		this.head_radius = .75;
 		this.headShape = new CANNON.Box(new CANNON.Vec3(this.head_radius, this.head_radius, this.head_radius));
@@ -35,8 +49,8 @@ module.exports = class GamePlayer extends GameObject
 		this.body.addShape(this.feetShape, this.feetOffset);
 		this.body.fixedRotation = true;
 		this.body.updateMassProperties();
-
 		this.headOrientation = this.body.shapeOrientations[0];
+<<<<<<< HEAD:game-package/objects/game/gameobjects/GamePlayer.js
 
 		// attributes
 		this.movement_speed = 5;
@@ -46,6 +60,8 @@ module.exports = class GamePlayer extends GameObject
 	setTeam(team)
 	{
 		this.team = team;
+=======
+>>>>>>> gltfLoader:game-package/objects/game/GamePlayer.js
 	}
 
 	downloadInitial()
@@ -96,19 +112,19 @@ module.exports = class GamePlayer extends GameObject
 		return base;
 	}
 
-	/* this.actions = {
-		move_forward: false,
-		move_backward: false,
-		move_left: false,
-		move_right: false,
-		crouch: false,
-		jump: false,
-		fire1: false,
-		fire2: false,
-		fire3: false
-	}; */
 	updateControls(controls, quaternion)
 	{
+		/* this.actions = {
+			move_forward: false,
+			move_backward: false,
+			move_left: false,
+			move_right: false,
+			crouch: false,
+			jump: false,
+			fire1: false,
+			fire2: false,
+			fire3: false
+		}; */
 		this.headOrientation.set(quaternion.x, quaternion.z, quaternion.y, quaternion.w);
 
 		// calculate yaw
@@ -162,7 +178,7 @@ module.exports = class GamePlayer extends GameObject
 			}
 		}
 
-		this.body.velocity.x = velocity_x != 0 ? velocity_x : this.body.velocity.x;
-		this.body.velocity.y = velocity_y != 0 ? velocity_y : this.body.velocity.y;
+		this.body.velocity.x = velocity_x != 0 ? velocity_x : (this.body.velocity.x * .9);
+		this.body.velocity.y = velocity_y != 0 ? velocity_y : (this.body.velocity.y * .9);
 	}
 }
