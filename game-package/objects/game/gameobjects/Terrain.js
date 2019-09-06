@@ -1,13 +1,13 @@
 const CANNON = require('cannon');
 
 const GameObject = require('./GameObject.js');
-const MaterialIndex = require('./MaterialIndex.js');
+const MaterialIndex = require('../MaterialIndex.js');
 
 module.exports = class Terrain extends GameObject
 {
-	constructor(terrainText)
+	constructor(game, object_id, terrainText)
 	{
-		super(0, 'terrain', 0, MaterialIndex.getMaterial('groundMaterial')); // terrain is ALWAYS object 0, mass 0
+		super(game, object_id, 'terrain', 0, MaterialIndex.getMaterial('groundMaterial')); // terrain is ALWAYS object 0, mass 0
 
 		this.vertices = []; // arrays to send to the client
 		this.faces = [];

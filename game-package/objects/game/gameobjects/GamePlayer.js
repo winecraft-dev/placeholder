@@ -1,13 +1,13 @@
 const CANNON = require('cannon');
 
 const GameObject = require('./GameObject.js');
-const MaterialIndex = require('./MaterialIndex.js');
+const MaterialIndex = require('../MaterialIndex.js');
 
 module.exports = class GamePlayer extends GameObject
 {
-	constructor(token, username, object_id)
+	constructor(game, object_id, token, username)
 	{
-		super(object_id, 'player', 5, MaterialIndex.getMaterial('playerMaterial'));
+		super(game, object_id, 'player', 5, MaterialIndex.getMaterial('playerMaterial'));
 
 		this.token = token;
 		this.username = username;

@@ -1,11 +1,9 @@
 const Game = require(rootDirectory + '/objects/game/Game.js');
-const GamePlayer = require(rootDirectory + '/objects/game/GamePlayer.js');
 
 var game_id;
 var games;
 
 var queueing;
-var object_id = -1;
 
 module.exports = class GameManager
 {
@@ -16,7 +14,7 @@ module.exports = class GameManager
 
 		queueing = new Map();
 
-		GameManager.createGame(new Map());
+		GameManager.createGame([]); // passes an empty array, but should be an array of object token, username
 	}
 
 	static createGame(players)
@@ -28,7 +26,7 @@ module.exports = class GameManager
 	static playerConnect(token, username)
 	{
 		// indexing 0 because only one game for testing purposes
-		games.get(0).addPlayer(token, new GamePlayer(token, username, object_id --));
+		games.get(0).addPlayer(token, username);
 		games.get(0).playerConnect(token);
 	}
 

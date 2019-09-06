@@ -2,8 +2,11 @@ const CANNON = require('cannon');
 
 module.exports = class GameObject
 {
-	constructor(id, type, mass, material)
+	constructor(game, id, type, mass, material)
 	{
+		// this is a very powerful reference to the master game
+		this.master_game = game;
+
 		this.id = id; // object_id
 		this.type = type; // "terrain", "player", "chest"...
 

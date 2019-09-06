@@ -27,28 +27,34 @@ function Connection(ip, token)
 	});
 
 	this.ws.addEventListener('message', function(e) {
-		var data = JSON.parse(e.data);
+		var packet = JSON.parse(e.data);
 
-		switch(data.receiver)
+		for(var data of packet)
 		{
-			case 'addobject':
-				addObject(data.object.id, data.type, data.self, data.object);
-				break;
-			case 'updateobject':
-				updateObject(data.object.id, data.type, data.object);
-				break;
-			case 'removeobject':
-				removeObject(data.object_id);
-				break;
-			case 'team_message':
-				// to do
-				break;
-			case 'match_message':
-				// to do
-				break;
-			default:
-				break;
-		}
+			switch(data.receiver)
+			{
+				case 'gravity':
+					console.log(data.gravity);
+					break;
+				case 'addobject':
+					addObject(data.object.id, data.type, data.self, data.object);
+					break;
+				case 'updateobject':
+					updateObject(data.object.id, data.type, data.object);
+					break;
+				case 'removeobject':
+					removeObject(data.object_id);
+					break;
+				case 'team_message':
+					// to do
+					break;
+				case 'match_message':
+					// to do
+					break;
+				default:
+					break;
+			}
+		}		
 	});
 
 	this.ws.addEventListener('close', function(e) {
