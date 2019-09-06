@@ -3,6 +3,8 @@ var objectList = new Map();
 var selfID = null;
 var selfRotationSpeed = .003;
 
+var gravity = 0;
+
 function addObject(id, type, self, object)
 {
 	switch(type)
@@ -40,6 +42,9 @@ function Terrain(id, initobject)
 	this.update = function(updateobject) {
 		this.mesh.position.set(updateobject.position.x, updateobject.position.y, updateobject.position.z);
 		this.mesh.quaternion.set(updateobject.quaternion.x, updateobject.quaternion.y, updateobject.quaternion.z, updateobject.quaternion.w);
+	};
+
+	this.updateVelocity = function() {
 	};
 
 	this.remove = function() {
@@ -104,8 +109,9 @@ function Terrain(id, initobject)
 function Player(id, self, initobject)
 {
 	this.update = function(updateobject) {
-		this.velocity.set(updateobject.velocity.x,updateobject.velocity.y,updateobject.velocity.z);
-		// boi this is some ugly ass code
+		if(updateobject.velocity != undefined)
+			this.velocity.set(updateobject.velocity.x,updateobject.velocity.y,updateobject.velocity.z);
+
 		if(!this.self)
 		{
 			//console.log(updateobject);
@@ -137,10 +143,13 @@ function Player(id, self, initobject)
 		this.model3D.getObjectByName("Head").rotation.set(objectFacingEuler.x,Math.PI,0);
 	};
 
-	this.updateVelocity = function()
-	{
-		this.velocity.add(new THREE.Vector3(0,-10,0));
-		this.model3D.position.add(new THREE.Vector3(this.velocity.x * global_time.getDelta,this.velocity.y * global_time.getDelta,this.velocity.z * global_time.getDelta));
+	this.updateVelocity = function(delta) {
+		//this.velocity.add(new THREE.Vector3(0, gravity * delta, 0));
+		var toAdd = new THREE.Vector3(this.velocity.x * delta,this.velocity.y * delta,this.velocity.z * delta);
+		this.model3D.position.add(toAdd);
+		this.head.mesh.position.add(toAdd);
+		this.body.mesh.position.add(toAdd);
+		this.feet.mesh.position.add(toAdd);
 	}
 
 	this.remove = function() {
@@ -294,5 +303,18 @@ function updateSelfInputs(movement, actions)
 	if(selfID != null)
 	{
 		objectList.get(selfID).updateInputs(movement.x, movement.y);
+	}
+}
+
+function setGravity(grav)
+{
+	gravity = parseInt(grav);
+}
+
+function updateVelocities(delta)
+{
+	for(var [id, gameobject] of objectList)
+	{
+		gameobject.updateVelocity(delta);
 	}
 }

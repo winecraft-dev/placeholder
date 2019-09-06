@@ -15,11 +15,8 @@ module.exports = class GameObject
 			material: material
 		});
 		this.body.id = this.id;
-<<<<<<< HEAD:game-package/objects/game/gameobjects/GameObject.js
 
 		this.contacts = new Map();
-=======
->>>>>>> gltfLoader:game-package/objects/game/GameObject.js
 	}
 
 	addTo(world)

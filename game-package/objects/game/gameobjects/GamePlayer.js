@@ -50,7 +50,6 @@ module.exports = class GamePlayer extends GameObject
 		this.body.fixedRotation = true;
 		this.body.updateMassProperties();
 		this.headOrientation = this.body.shapeOrientations[0];
-<<<<<<< HEAD:game-package/objects/game/gameobjects/GamePlayer.js
 
 		// attributes
 		this.movement_speed = 5;
@@ -60,8 +59,6 @@ module.exports = class GamePlayer extends GameObject
 	setTeam(team)
 	{
 		this.team = team;
-=======
->>>>>>> gltfLoader:game-package/objects/game/GamePlayer.js
 	}
 
 	downloadInitial()

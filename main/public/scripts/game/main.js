@@ -73,15 +73,11 @@ $(document).ready(function() {
 		sun.Update();
 		bgMesh.position.copy(global_camera.camera.position);
 
-		console.log(global_time.getDelta());
-		for(var object of objectList)
-		{
-			if(object.velocity != undefined)
-				object.updateVelocity();
-		}
+		//console.log(global_time.getDelta());
+		updateVelocities(global_time.getDelta());
 
-		global_renderer.render(global_scene, global_camera.camera);
 		global_time.start();
+		global_renderer.render(global_scene, global_camera.camera);
 	}
 	animate();
 

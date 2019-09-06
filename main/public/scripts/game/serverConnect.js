@@ -34,7 +34,7 @@ function Connection(ip, token)
 			switch(data.receiver)
 			{
 				case 'gravity':
-					console.log(data.gravity);
+					setGravity(data.gravity);
 					break;
 				case 'addobject':
 					addObject(data.object.id, data.type, data.self, data.object);
